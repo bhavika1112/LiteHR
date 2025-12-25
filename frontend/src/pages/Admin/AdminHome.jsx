@@ -1,684 +1,548 @@
-import React, { useState, useEffect } from "react";
-import AdminLayout from "../../layouts/AdminLayout";
+import React from "react";
 import { 
-  FiTrendingUp, 
-  FiTrendingDown, 
-  FiUsers, 
-  FiCalendar, 
-  FiHome,
-  FiDollarSign,
-  FiClock,
-  FiUserCheck,
-  FiUserX,
-  FiAlertCircle,
-  FiDownload,
-  FiFilter,
-  FiSearch,
-  FiEye,
-  FiEdit,
-  FiMail,
-  FiPhone,
-  FiCheckCircle,
-  FiXCircle,
-  FiMoreVertical
+  FiUsers, FiCalendar, FiDollarSign, FiTrendingUp, FiClock, 
+  FiBriefcase, FiCheckCircle, FiAlertCircle, FiDownload,
+  FiActivity, FiPieChart, FiBarChart2
 } from "react-icons/fi";
-import { 
-  HiOutlineOfficeBuilding, 
-  HiOutlineDocumentReport,
-  HiOutlineCash,
-  HiOutlineUserAdd,
-  HiOutlineUserGroup
-} from "react-icons/hi";
-
+import { HiOutlineOfficeBuilding } from "react-icons/hi";
+import {
+  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
+  PieChart, Pie, Cell, LineChart, Line, AreaChart, Area, ComposedChart
+} from 'recharts';
+import { useTheme, useThemeClasses } from "../../contexts/ThemeContext";
 const AdminHome = () => {
-  const [timeRange, setTimeRange] = useState("week");
-  const [activeTab, setActiveTab] = useState("overview");
-  const [loading, setLoading] = useState(false);
-  const [quickStats, setQuickStats] = useState({
-    totalEmployees: 0,
-    presentToday: 0,
-    onLeave: 0,
-    remoteWork: 0
-  });
+const darkMode = useTheme() || false; // Default to false if undefined
+const theme = useThemeClasses();
 
-  // Simulate loading data
-  useEffect(() => {
-    setLoading(true);
-    setTimeout(() => {
-      setQuickStats({
-        totalEmployees: 124,
-        presentToday: 108,
-        onLeave: 7,
-        remoteWork: 9
-      });
-      setLoading(false);
-    }, 1000);
-  }, []);
+  const colors = {
+    primary: "#8B5CF6", // Purple
+    secondary: "#10B981", // Emerald (kept for contrast)
+    tertiary: "#3B82F6", // Blue (kept for charts)
+    success: "#10B981",
+    warning: "#F59E0B",
+    danger: "#EF4444",
+    cardBg: darkMode ? "#1E293B" : "#FFFFFF",
+    border: darkMode ? "#374151" : "#E5E7EB",
+    text: darkMode ? "#F9FAFB" : "#111827",
+    textMuted: darkMode ? "#9CA3AF" : "#6B7280"
+  };
 
+  // Stats data updated with purple theme
   const stats = [
     { 
-      title: "Total Employees", 
-      value: quickStats.totalEmployees, 
+      icon: <FiUsers className="w-6 h-6" />, 
+      label: "Total Employees", 
+      value: "150", 
       change: "+12%", 
-      trend: "up",
-      icon: <HiOutlineUserGroup className="w-6 h-6" />,
-      color: "from-blue-500 to-cyan-500",
-      description: "Active workforce"
+      trend: "up", 
+      color: darkMode ? "bg-purple-500/20 text-purple-400" : "bg-purple-100 text-purple-700" 
     },
     { 
-      title: "Present Today", 
-      value: quickStats.presentToday, 
-      change: "+5%", 
-      trend: "up",
-      icon: <FiUserCheck className="w-6 h-6" />,
-      color: "from-green-500 to-emerald-500",
-      description: "Office attendance"
+      icon: <FiCalendar className="w-6 h-6" />, 
+      label: "Today's Attendance", 
+      value: "142", 
+      change: "94.6%", 
+      trend: "up", 
+      color: darkMode ? "bg-emerald-500/20 text-emerald-400" : "bg-emerald-100 text-emerald-700" 
     },
     { 
-      title: "On Leave", 
-      value: quickStats.onLeave, 
-      change: "-2%", 
-      trend: "down",
-      icon: <FiCalendar className="w-6 h-6" />,
-      color: "from-amber-500 to-orange-500",
-      description: "Leave applications"
+      icon: <HiOutlineOfficeBuilding className="w-6 h-6" />, 
+      label: "Departments", 
+      value: "8", 
+      change: "+1", 
+      trend: "up", 
+      color: darkMode ? "bg-purple-500/20 text-purple-400" : "bg-purple-100 text-purple-700" 
     },
     { 
-      title: "Remote Work", 
-      value: quickStats.remoteWork, 
-      change: "+8%", 
-      trend: "up",
-      icon: <FiHome className="w-6 h-6" />,
-      color: "from-purple-500 to-pink-500",
-      description: "Working remotely"
+      icon: <FiBriefcase className="w-6 h-6" />, 
+      label: "Active Jobs", 
+      value: "5", 
+      change: "2 New", 
+      trend: "up", 
+      color: darkMode ? "bg-amber-500/20 text-amber-400" : "bg-amber-100 text-amber-700" 
     },
     { 
-      title: "Attendance Rate", 
-      value: "96.5%", 
-      change: "+1.2%", 
-      trend: "up",
-      icon: <FiClock className="w-6 h-6" />,
-      color: "from-indigo-500 to-blue-500",
-      description: "Monthly average"
+      icon: <FiClock className="w-6 h-6" />, 
+      label: "Pending Leaves", 
+      value: "8", 
+      change: "3 Today", 
+      trend: "down", 
+      color: darkMode ? "bg-rose-500/20 text-rose-400" : "bg-rose-100 text-rose-700" 
     },
     { 
-      title: "Payroll Processed", 
-      value: "$124,850", 
-      change: "On track", 
-      trend: "up",
-      icon: <HiOutlineCash className="w-6 h-6" />,
-      color: "from-teal-500 to-green-500",
-      description: "This month"
+      icon: <FiDollarSign className="w-6 h-6" />, 
+      label: "Payroll Due", 
+      value: "₹4,82,500", 
+      change: "15th Nov", 
+      trend: "neutral", 
+      color: darkMode ? "bg-cyan-500/20 text-cyan-400" : "bg-cyan-100 text-cyan-700" 
     },
   ];
 
-  const recentEmployees = [
-    { 
-      id: 1, 
-      name: "Alex Johnson", 
-      department: "Engineering", 
-      position: "Senior Developer",
-      status: "active",
-      joinDate: "2024-01-15",
-      avatarColor: "bg-blue-500"
-    },
-    { 
-      id: 2, 
-      name: "Sarah Miller", 
-      department: "HR", 
-      position: "HR Manager",
-      status: "active",
-      joinDate: "2023-08-22",
-      avatarColor: "bg-pink-500"
-    },
-    { 
-      id: 3, 
-      name: "Michael Chen", 
-      department: "Sales", 
-      position: "Sales Lead",
-      status: "on-leave",
-      joinDate: "2023-11-05",
-      avatarColor: "bg-green-500"
-    },
-    { 
-      id: 4, 
-      name: "Emma Wilson", 
-      department: "Marketing", 
-      position: "Content Strategist",
-      status: "remote",
-      joinDate: "2024-02-10",
-      avatarColor: "bg-purple-500"
-    },
-    { 
-      id: 5, 
-      name: "David Park", 
-      department: "Finance", 
-      position: "Financial Analyst",
-      status: "active",
-      joinDate: "2023-09-18",
-      avatarColor: "bg-amber-500"
-    },
+  // Department performance data for chart
+  const departmentData = [
+    { name: "IT", attendance: 97, productivity: 92, employees: 35 },
+    { name: "HR", attendance: 95, productivity: 88, employees: 20 },
+    { name: "Finance", attendance: 96, productivity: 90, employees: 18 },
+    { name: "Marketing", attendance: 94, productivity: 85, employees: 15 },
+    { name: "Operations", attendance: 93, productivity: 87, employees: 12 },
   ];
 
-  const leaveRequests = [
-    { id: 1, name: "Robert Kim", type: "Annual Leave", period: "Mar 15-18", days: 4, status: "pending" },
-    { id: 2, name: "Lisa Wong", type: "Sick Leave", period: "Mar 12", days: 1, status: "approved" },
-    { id: 3, name: "James Wilson", type: "Emergency", period: "Mar 10-11", days: 2, status: "pending" },
-    { id: 4, name: "Maria Garcia", type: "Maternity", period: "Mar 1-31", days: 31, status: "approved" },
-    { id: 5, name: "Tom Brown", type: "Study Leave", period: "Mar 20-22", days: 3, status: "rejected" },
+  // Attendance trend data for line chart
+  const attendanceTrendData = [
+    { day: "Mon", present: 95, late: 8 },
+    { day: "Tue", present: 96, late: 6 },
+    { day: "Wed", present: 97, late: 5 },
+    { day: "Thu", present: 94, late: 10 },
+    { day: "Fri", present: 98, late: 4 },
+    { day: "Sat", present: 30, late: 2 },
+    { day: "Sun", present: 20, late: 1 },
   ];
 
+  // Employee distribution data for pie chart - updated colors
+  const employeeDistributionData = [
+    { name: "Full-time", value: 120, color: colors.primary }, // Purple
+    { name: "Part-time", value: 18, color: "#10B981" }, // Emerald
+    { name: "Contract", value: 8, color: "#F59E0B" }, // Amber
+    { name: "Interns", value: 4, color: "#3B82F6" }, // Blue
+  ];
+
+  // Leave statistics data - updated colors
+  const leaveData = [
+    { type: "Sick Leave", count: 24, color: colors.primary }, // Purple
+    { type: "Casual Leave", count: 18, color: "#10B981" }, // Emerald
+    { type: "Earned Leave", count: 32, color: "#F59E0B" }, // Amber
+    { type: "Maternity", count: 3, color: "#3B82F6" }, // Blue
+  ];
+
+  // Upcoming events
   const upcomingEvents = [
-    { id: 1, title: "Quarterly Review Meeting", date: "Mar 15, 10:00 AM", type: "meeting" },
-    { id: 2, title: "Team Building Activity", date: "Mar 18, 2:00 PM", type: "event" },
-    { id: 3, title: "Project Deadline", date: "Mar 22, EOD", type: "deadline" },
-    { id: 4, title: "Company All-Hands", date: "Mar 25, 11:00 AM", type: "meeting" },
-    { id: 5, title: "Hiring Interviews", date: "Mar 28, 9:00 AM", type: "interview" },
+    { title: "Team Meeting", time: "Today, 3:00 PM", type: "meeting" },
+    { title: "Payroll Processing", time: "Tomorrow", type: "payroll" },
+    { title: "Performance Reviews", time: "Next Week", type: "review" },
+    { title: "Company Holiday", time: "25th Dec", type: "holiday" },
   ];
 
-  const departmentPerformance = [
-    { name: "Engineering", employees: 42, attendance: 96, productivity: 92, budget: "$450K" },
-    { name: "Sales", employees: 28, attendance: 94, productivity: 88, budget: "$320K" },
-    { name: "Marketing", employees: 18, attendance: 97, productivity: 95, budget: "$280K" },
-    { name: "HR", employees: 12, attendance: 98, productivity: 90, budget: "$180K" },
-    { name: "Finance", employees: 14, attendance: 95, productivity: 96, budget: "$220K" },
-    { name: "Operations", employees: 10, attendance: 93, productivity: 89, budget: "$150K" },
+  // Recent activities
+  const recentActivities = [
+    { user: "Rahul Sharma", action: "checked in", time: "9:15 AM", status: "success" },
+    { user: "Priya Patel", action: "applied for leave", time: "10:30 AM", status: "warning" },
+    { user: "Simran Kaur", action: "approved leave", time: "11:45 AM", status: "success" },
+    { user: "Ankit Mehta", action: "submitted report", time: "1:20 PM", status: "success" },
+    { user: "System", action: "backup completed", time: "2:00 AM", status: "info" },
+    { user: "Ravi Kumar", action: "updated profile", time: "3:45 PM", status: "success" },
+    { user: "Sneha Verma", action: "requested equipment", time: "4:20 PM", status: "warning" },
+    { user: "Vikram Singh", action: "completed training", time: "5:00 PM", status: "success" },
   ];
 
-  const handleQuickAction = (action) => {
-    console.log(`Quick action: ${action}`);
-    // Implement action logic
+  // Custom tooltip for charts
+  const CustomTooltip = ({ active, payload, label }) => {
+    if (active && payload && payload.length) {
+      return (
+        <div className={`${darkMode ? 'bg-gray-800' : 'bg-white'} p-3 border ${darkMode ? 'border-gray-700' : 'border-gray-300'} rounded-lg shadow-lg`}>
+          <p className={`font-medium ${darkMode ? 'text-gray-300' : 'text-gray-900'}`}>{label}</p>
+          {payload.map((entry, index) => (
+            <p key={index} className="text-sm" style={{ color: entry.color }}>
+              {entry.name}: {entry.value}%
+            </p>
+          ))}
+        </div>
+      );
+    }
+    return null;
   };
 
-  const handleApproveLeave = (id) => {
-    console.log(`Approving leave ${id}`);
-    // Implement API call
+  const getTrendIcon = (trend) => {
+    if (trend === "up") return <FiTrendingUp className="w-4 h-4 text-emerald-500 dark:text-emerald-400" />;
+    if (trend === "down") return <div className="w-4 h-4 text-rose-500 dark:text-rose-400 rotate-90">↓</div>;
+    return <div className="w-4 h-0.5 bg-gray-400"></div>;
   };
 
-  const handleRejectLeave = (id) => {
-    console.log(`Rejecting leave ${id}`);
-    // Implement API call
+  const getStatusIcon = (status) => {
+    switch(status) {
+      case "success": return <div className="w-2 h-2 rounded-full bg-emerald-500 dark:bg-emerald-400 animate-pulse"></div>;
+      case "warning": return <div className="w-2 h-2 rounded-full bg-amber-500 dark:bg-amber-400 animate-pulse"></div>;
+      case "info": return <div className="w-2 h-2 rounded-full bg-cyan-500 dark:bg-cyan-400 animate-pulse"></div>;
+      default: return <div className="w-2 h-2 rounded-full bg-gray-400"></div>;
+    }
   };
 
-  const handleExportData = () => {
-    console.log("Exporting dashboard data...");
-    // Implement export logic
+  const getEventColor = (type) => {
+    switch(type) {
+      case "meeting": return darkMode ? "bg-purple-500/20 text-purple-400" : "bg-purple-100 text-purple-700";
+      case "payroll": return darkMode ? "bg-emerald-500/20 text-emerald-400" : "bg-emerald-100 text-emerald-700";
+      case "review": return darkMode ? "bg-purple-500/20 text-purple-400" : "bg-purple-100 text-purple-700";
+      case "holiday": return darkMode ? "bg-amber-500/20 text-amber-400" : "bg-amber-100 text-amber-700";
+      default: return darkMode ? "bg-gray-500/20 text-gray-400" : "bg-gray-100 text-gray-700";
+    }
   };
 
-  const getStatusBadge = (status) => {
-    const styles = {
-      active: "bg-green-100 text-green-800",
-      "on-leave": "bg-amber-100 text-amber-800",
-      remote: "bg-blue-100 text-blue-800",
-      pending: "bg-yellow-100 text-yellow-800",
-      approved: "bg-green-100 text-green-800",
-      rejected: "bg-red-100 text-red-800"
-    };
-    return (
-      <span className={`px-2 py-1 text-xs rounded-full ${styles[status]}`}>
-        {status.charAt(0).toUpperCase() + status.slice(1)}
-      </span>
-    );
+  const getEventIcon = (type) => {
+    switch(type) {
+      case "meeting": return <FiUsers className="w-5 h-5" />;
+      case "payroll": return <FiDollarSign className="w-5 h-5" />;
+      case "review": return <FiTrendingUp className="w-5 h-5" />;
+      case "holiday": return <FiCalendar className="w-5 h-5" />;
+      default: return <FiCalendar className="w-5 h-5" />;
+    }
   };
 
   return (
-    <AdminLayout>
-      {/* Header with Actions */}
-      <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 mb-8">
-        <div>
-          <h1 className="text-3xl font-bold text-slate-800 mb-2">Welcome back, Admin</h1>
-          <p className="text-slate-600">
-            Here's what's happening with your organization today.
-          </p>
-        </div>
-        
-        <div className="flex flex-wrap gap-3">
-          <button 
-            onClick={handleExportData}
-            className="flex items-center gap-2 px-4 py-2.5 border border-slate-300 text-slate-700 rounded-lg hover:bg-slate-50 font-medium"
-          >
-            <FiDownload className="w-4 h-4" />
-            Export Report
-          </button>
-          <button 
-            onClick={() => handleQuickAction("add-employee")}
-            className="flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-blue-500 to-cyan-500 text-white rounded-lg hover:opacity-90 font-medium"
-          >
-            <HiOutlineUserAdd className="w-4 h-4" />
-            Add Employee
-          </button>
-        </div>
-      </div>
-
-      {/* Time Range & Filter Tabs */}
-      <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 mb-6">
-        <div className="flex gap-2 bg-slate-100 p-1 rounded-lg">
-          {["day", "week", "month", "quarter"].map((range) => (
-            <button
-              key={range}
-              onClick={() => setTimeRange(range)}
-              className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${
-                timeRange === range
-                  ? "bg-white text-slate-800 shadow"
-                  : "text-slate-600 hover:text-slate-800"
-              }`}
-            >
-              {range.charAt(0).toUpperCase() + range.slice(1)}
+    <>
+      {/* Welcome Header */}
+      <div className="mb-8">
+        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 mb-6">
+          <div>
+            <h1 className={`text-3xl font-bold ${theme.text.primary}`}>
+              Welcome back, Admin!
+            </h1>
+            <p className={theme.text.secondary}>
+              Here's what's happening with your organization today.
+            </p>
+          </div>
+          <div className="flex gap-3">
+            <select className={`px-4 py-2.5 ${theme.input.bg} border ${theme.input.border} ${theme.input.text} rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500`}>
+              <option>Today</option>
+              <option>This Week</option>
+              <option>This Month</option>
+            </select>
+            <button className="flex items-center gap-2 px-4 py-2.5 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-medium transition-colors">
+              <FiDownload className="w-4 h-4" />
+              Export Report
             </button>
-          ))}
-        </div>
-        
-        <div className="flex items-center gap-3">
-          <div className="relative">
-            <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400" />
-            <input
-              type="text"
-              placeholder="Search employees, departments..."
-              className="pl-10 pr-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-200 focus:border-blue-500"
-            />
-          </div>
-          <button className="flex items-center gap-2 px-4 py-2 border border-slate-300 rounded-lg hover:bg-slate-50">
-            <FiFilter className="w-4 h-4" />
-            Filters
-          </button>
-        </div>
-      </div>
-
-      {/* Dashboard Tabs */}
-      <div className="mb-6">
-        <div className="flex flex-wrap gap-2 border-b border-slate-200">
-          {["overview", "analytics", "employees", "attendance", "payroll"].map((tab) => (
-            <button
-              key={tab}
-              onClick={() => setActiveTab(tab)}
-              className={`px-6 py-3 text-sm font-medium border-b-2 transition-all ${
-                activeTab === tab
-                  ? "border-blue-500 text-blue-600"
-                  : "border-transparent text-slate-600 hover:text-slate-800"
-              }`}
-            >
-              {tab.charAt(0).toUpperCase() + tab.slice(1)}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {/* STATS GRID */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4 mb-8">
-        {stats.map((stat, index) => (
-          <div 
-            key={index} 
-            className={`bg-white rounded-xl shadow-sm border border-slate-200 p-4 hover:shadow-md transition-all duration-300 ${
-              loading ? "animate-pulse" : ""
-            }`}
-          >
-            <div className="flex justify-between items-start mb-3">
-              <div className={`p-2 rounded-lg bg-gradient-to-r ${stat.color} text-white`}>
-                {stat.icon}
-              </div>
-              <span className={`text-xs font-medium flex items-center ${
-                stat.trend === "up" ? "text-green-500" : "text-amber-500"
-              }`}>
-                {stat.trend === "up" ? <FiTrendingUp className="mr-1" /> : <FiTrendingDown className="mr-1" />}
-                {stat.change}
-              </span>
-            </div>
-            <h2 className="text-2xl font-bold text-slate-800 mb-1">
-              {loading ? "..." : stat.value}
-            </h2>
-            <p className="text-sm font-medium text-slate-600 mb-1">{stat.title}</p>
-            <p className="text-xs text-slate-500">{stat.description}</p>
-          </div>
-        ))}
-      </div>
-
-      {/* MAIN CONTENT GRID */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-        {/* Left Column - Chart & Recent Employees */}
-        <div className="lg:col-span-2 space-y-6">
-          {/* Attendance Chart */}
-          <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
-            <div className="flex justify-between items-center mb-6">
-              <div>
-                <h2 className="text-lg font-semibold text-slate-800">Attendance Trends</h2>
-                <p className="text-sm text-slate-600">Weekly overview</p>
-              </div>
-              <select className="border border-slate-300 rounded-lg px-3 py-2 text-sm bg-white">
-                <option>Last 7 days</option>
-                <option>Last 30 days</option>
-                <option>Last quarter</option>
-              </select>
-            </div>
-            
-            {/* Chart Placeholder with Interactive Legend */}
-            <div className="space-y-4">
-              <div className="flex items-center justify-center gap-4 mb-4">
-                {["Present", "Late", "Absent", "Remote"].map((item, idx) => (
-                  <div key={idx} className="flex items-center gap-2">
-                    <div className={`w-3 h-3 rounded-full ${
-                      idx === 0 ? "bg-green-500" :
-                      idx === 1 ? "bg-amber-500" :
-                      idx === 2 ? "bg-red-500" : "bg-blue-500"
-                    }`} />
-                    <span className="text-sm text-slate-600">{item}</span>
-                  </div>
-                ))}
-              </div>
-              
-              <div className="h-64 flex items-end justify-between gap-2 px-4 border-b border-l border-slate-200">
-                {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((day, idx) => (
-                  <div key={day} className="flex flex-col items-center flex-1">
-                    <div className="text-xs text-slate-500 mb-2">{day}</div>
-                    <div className="w-full flex flex-col items-center gap-1">
-                      <div 
-                        className="w-full bg-green-500 rounded-t"
-                        style={{ height: `${60 + Math.random() * 40}%` }}
-                        title={`Present: ${Math.floor(80 + Math.random() * 20)}%`}
-                      ></div>
-                      <div 
-                        className="w-3/4 bg-amber-500 rounded-t"
-                        style={{ height: `${Math.random() * 30}%` }}
-                        title={`Late: ${Math.floor(Math.random() * 15)}%`}
-                      ></div>
-                      <div 
-                        className="w-1/2 bg-red-500 rounded-t"
-                        style={{ height: `${Math.random() * 20}%` }}
-                        title={`Absent: ${Math.floor(Math.random() * 10)}%`}
-                      ></div>
-                    </div>
-                    <div className="text-xs font-medium text-slate-700 mt-2">
-                      {Math.floor(85 + Math.random() * 15)}%
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-
-          {/* Recent Employees Table */}
-          <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
-            <div className="flex justify-between items-center mb-6">
-              <div>
-                <h2 className="text-lg font-semibold text-slate-800">Recent Employees</h2>
-                <p className="text-sm text-slate-600">Recently joined team members</p>
-              </div>
-              <button className="text-blue-500 text-sm font-medium hover:text-blue-600">
-                View All →
-              </button>
-            </div>
-            
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead>
-                  <tr className="border-b border-slate-200">
-                    <th className="text-left py-3 px-4 text-sm font-semibold text-slate-700">Employee</th>
-                    <th className="text-left py-3 px-4 text-sm font-semibold text-slate-700">Department</th>
-                    <th className="text-left py-3 px-4 text-sm font-semibold text-slate-700">Position</th>
-                    <th className="text-left py-3 px-4 text-sm font-semibold text-slate-700">Status</th>
-                    <th className="text-left py-3 px-4 text-sm font-semibold text-slate-700">Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {recentEmployees.map((emp) => (
-                    <tr key={emp.id} className="border-b border-slate-100 hover:bg-slate-50">
-                      <td className="py-3 px-4">
-                        <div className="flex items-center gap-3">
-                          <div className={`w-10 h-10 rounded-full ${emp.avatarColor} flex items-center justify-center text-white font-medium`}>
-                            {emp.name.charAt(0)}
-                          </div>
-                          <div>
-                            <p className="font-medium text-slate-800">{emp.name}</p>
-                            <p className="text-xs text-slate-500">Joined {emp.joinDate}</p>
-                          </div>
-                        </div>
-                      </td>
-                      <td className="py-3 px-4">
-                        <span className="text-slate-700">{emp.department}</span>
-                      </td>
-                      <td className="py-3 px-4">
-                        <span className="text-slate-700">{emp.position}</span>
-                      </td>
-                      <td className="py-3 px-4">
-                        {getStatusBadge(emp.status)}
-                      </td>
-                      <td className="py-3 px-4">
-                        <div className="flex items-center gap-2">
-                          <button className="p-2 text-blue-500 hover:bg-blue-50 rounded-lg">
-                            <FiEye className="w-4 h-4" />
-                          </button>
-                          <button className="p-2 text-green-500 hover:bg-green-50 rounded-lg">
-                            <FiMail className="w-4 h-4" />
-                          </button>
-                          <button className="p-2 text-slate-500 hover:bg-slate-100 rounded-lg">
-                            <FiMoreVertical className="w-4 h-4" />
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
           </div>
         </div>
 
-        {/* Right Column - Quick Actions & Notifications */}
-        <div className="space-y-6">
-          {/* Quick Actions */}
-          <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
-            <h2 className="text-lg font-semibold text-slate-800 mb-6">Quick Actions</h2>
-            <div className="grid grid-cols-2 gap-3">
-              <button 
-                onClick={() => handleQuickAction("add-employee")}
-                className="p-4 bg-gradient-to-br from-blue-50 to-blue-100 border border-blue-200 rounded-xl hover:shadow-md transition-all flex flex-col items-center gap-2"
-              >
-                <HiOutlineUserAdd className="w-6 h-6 text-blue-500" />
-                <span className="text-sm font-medium text-blue-700">Add Employee</span>
-              </button>
-              <button 
-                onClick={() => handleQuickAction("process-payroll")}
-                className="p-4 bg-gradient-to-br from-green-50 to-green-100 border border-green-200 rounded-xl hover:shadow-md transition-all flex flex-col items-center gap-2"
-              >
-                <HiOutlineCash className="w-6 h-6 text-green-500" />
-                <span className="text-sm font-medium text-green-700">Process Payroll</span>
-              </button>
-              <button 
-                onClick={() => handleQuickAction("reports")}
-                className="p-4 bg-gradient-to-br from-purple-50 to-purple-100 border border-purple-200 rounded-xl hover:shadow-md transition-all flex flex-col items-center gap-2"
-              >
-                <HiOutlineDocumentReport className="w-6 h-6 text-purple-500" />
-                <span className="text-sm font-medium text-purple-700">Generate Reports</span>
-              </button>
-              <button 
-                onClick={() => handleQuickAction("schedule")}
-                className="p-4 bg-gradient-to-br from-amber-50 to-amber-100 border border-amber-200 rounded-xl hover:shadow-md transition-all flex flex-col items-center gap-2"
-              >
-                <FiCalendar className="w-6 h-6 text-amber-500" />
-                <span className="text-sm font-medium text-amber-700">Schedule Shifts</span>
-              </button>
-            </div>
-          </div>
-
-          {/* Leave Requests */}
-          <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
-            <div className="flex justify-between items-center mb-6">
-              <h2 className="text-lg font-semibold text-slate-800">Leave Requests</h2>
-              <span className="text-sm font-medium text-blue-500">{leaveRequests.filter(l => l.status === 'pending').length} pending</span>
-            </div>
-            
-            <div className="space-y-3">
-              {leaveRequests.map((request) => (
-                <div key={request.id} className="p-3 border border-slate-200 rounded-lg hover:border-slate-300">
-                  <div className="flex justify-between items-start mb-2">
-                    <div>
-                      <p className="font-medium text-slate-800">{request.name}</p>
-                      <p className="text-xs text-slate-500">{request.type}</p>
-                    </div>
-                    {getStatusBadge(request.status)}
-                  </div>
-                  <div className="flex justify-between items-center text-sm">
-                    <span className="text-slate-600">{request.period} • {request.days} days</span>
-                    {request.status === "pending" && (
-                      <div className="flex gap-2">
-                        <button 
-                          onClick={() => handleApproveLeave(request.id)}
-                          className="px-2 py-1 bg-green-100 text-green-700 rounded text-xs hover:bg-green-200"
-                        >
-                          Approve
-                        </button>
-                        <button 
-                          onClick={() => handleRejectLeave(request.id)}
-                          className="px-2 py-1 bg-red-100 text-red-700 rounded text-xs hover:bg-red-200"
-                        >
-                          Reject
-                        </button>
-                      </div>
-                    )}
-                  </div>
+        {/* Stats Grid */}
+        <div className="grid grid-cols-2 lg:grid-cols-6 gap-4 mb-8">
+          {stats.map((stat, index) => (
+            <div key={index} className={`${theme.bg.secondary} rounded-xl p-4 border ${theme.border.primary} shadow-sm`}>
+              <div className="flex items-center justify-between mb-3">
+                <div className={`w-10 h-10 rounded-lg ${stat.color} flex items-center justify-center`}>
+                  {stat.icon}
                 </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Upcoming Events */}
-          <div className="bg-gradient-to-r from-blue-50 to-cyan-50 border border-blue-200 rounded-xl p-6">
-            <h2 className="text-lg font-semibold text-blue-800 mb-4">Upcoming Events</h2>
-            <div className="space-y-3">
-              {upcomingEvents.map((event) => (
-                <div key={event.id} className="flex items-center gap-3 p-3 bg-white/50 rounded-lg">
-                  <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${
-                    event.type === 'meeting' ? 'bg-blue-100 text-blue-600' :
-                    event.type === 'event' ? 'bg-green-100 text-green-600' :
-                    event.type === 'deadline' ? 'bg-amber-100 text-amber-600' : 'bg-purple-100 text-purple-600'
+                <div className="flex items-center gap-1">
+                  {getTrendIcon(stat.trend)}
+                  <span className={`text-sm font-medium ${
+                    stat.trend === "up" ? "text-emerald-500 dark:text-emerald-400" : 
+                    stat.trend === "down" ? "text-rose-500 dark:text-rose-400" : 
+                    theme.text.muted
                   }`}>
-                    {event.type === 'meeting' ? 'M' :
-                     event.type === 'event' ? 'E' :
-                     event.type === 'deadline' ? 'D' : 'I'}
-                  </div>
-                  <div className="flex-1">
-                    <p className="font-medium text-slate-800">{event.title}</p>
-                    <p className="text-sm text-slate-600">{event.date}</p>
-                  </div>
+                    {stat.change}
+                  </span>
                 </div>
-              ))}
+              </div>
+              <h3 className={`text-2xl font-bold ${theme.text.primary}`}>{stat.value}</h3>
+              <p className={`text-sm ${theme.text.secondary}`}>{stat.label}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Charts Section */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+        {/* Department Performance - Bar Chart */}
+        <div className={`${theme.bg.secondary} rounded-xl p-6 border ${theme.border.primary} shadow-sm`}>
+          <div className="flex justify-between items-center mb-6">
+            <h2 className={`text-lg font-semibold ${theme.text.primary}`}>Department Performance</h2>
+            <button className="text-sm text-purple-600 dark:text-purple-400 hover:underline">View Details</button>
+          </div>
+          <div className="h-72">
+            <ResponsiveContainer width="100%" height="100%">
+              <ComposedChart data={departmentData}>
+                <CartesianGrid strokeDasharray="3 3" stroke={darkMode ? "#374151" : "#E5E7EB"} />
+                <XAxis dataKey="name" stroke={darkMode ? "#9CA3AF" : "#6B7280"} />
+                <YAxis stroke={darkMode ? "#9CA3AF" : "#6B7280"} />
+                <Tooltip content={<CustomTooltip />} />
+                <Legend />
+                <Bar dataKey="attendance" name="Attendance (%)" fill={colors.primary} radius={[4, 4, 0, 0]} />
+                <Bar dataKey="productivity" name="Productivity (%)" fill={colors.secondary} radius={[4, 4, 0, 0]} />
+                <Line type="monotone" dataKey="employees" name="Employees" stroke={colors.warning} strokeWidth={2} />
+              </ComposedChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+
+        {/* Attendance Trends - Line Chart */}
+        <div className={`${theme.bg.secondary} rounded-xl p-6 border ${theme.border.primary} shadow-sm`}>
+          <div className="flex justify-between items-center mb-6">
+            <h2 className={`text-lg font-semibold ${theme.text.primary}`}>Weekly Attendance Trends</h2>
+            <button className="text-sm text-purple-600 dark:text-purple-400 hover:underline">View Details</button>
+          </div>
+          <div className="h-72">
+            <ResponsiveContainer width="100%" height="100%">
+              <AreaChart data={attendanceTrendData}>
+                <CartesianGrid strokeDasharray="3 3" stroke={darkMode ? "#374151" : "#E5E7EB"} />
+                <XAxis dataKey="day" stroke={darkMode ? "#9CA3AF" : "#6B7280"} />
+                <YAxis stroke={darkMode ? "#9CA3AF" : "#6B7280"} />
+                <Tooltip content={<CustomTooltip />} />
+                <Legend />
+                <Area type="monotone" dataKey="present" name="Present (%)" stroke={colors.primary} fill={colors.primary} fillOpacity={0.3} />
+                <Area type="monotone" dataKey="late" name="Late Arrivals" stroke={colors.warning} fill={colors.warning} fillOpacity={0.3} />
+              </AreaChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+      </div>
+
+      {/* Second Row Charts */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+        {/* Employee Distribution - Pie Chart */}
+        <div className={`${theme.bg.secondary} rounded-xl p-6 border ${theme.border.primary} shadow-sm`}>
+          <div className="flex justify-between items-center mb-6">
+            <h2 className={`text-lg font-semibold ${theme.text.primary}`}>Employee Distribution</h2>
+            <button className="text-sm text-purple-600 dark:text-purple-400 hover:underline">View Details</button>
+          </div>
+          <div className="h-64">
+            <ResponsiveContainer width="100%" height="100%">
+              <PieChart>
+                <Pie
+                  data={employeeDistributionData}
+                  cx="50%"
+                  cy="50%"
+                  labelLine={false}
+                  label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
+                  outerRadius={80}
+                  fill="#8884d8"
+                  dataKey="value"
+                >
+                  {employeeDistributionData.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={entry.color} />
+                  ))}
+                </Pie>
+                <Tooltip formatter={(value) => [`${value} employees`, 'Count']} />
+                <Legend />
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+
+        {/* Leave Statistics - Bar Chart */}
+        <div className={`${theme.bg.secondary} rounded-xl p-6 border ${theme.border.primary} shadow-sm`}>
+          <div className="flex justify-between items-center mb-6">
+            <h2 className={`text-lg font-semibold ${theme.text.primary}`}>Leave Statistics</h2>
+            <button className="text-sm text-purple-600 dark:text-purple-400 hover:underline">View Details</button>
+          </div>
+          <div className="h-64">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={leaveData}>
+                <CartesianGrid strokeDasharray="3 3" stroke={darkMode ? "#374151" : "#E5E7EB"} />
+                <XAxis dataKey="type" stroke={darkMode ? "#9CA3AF" : "#6B7280"} angle={-45} textAnchor="end" height={60} />
+                <YAxis stroke={darkMode ? "#9CA3AF" : "#6B7280"} />
+                <Tooltip content={<CustomTooltip />} />
+                <Bar dataKey="count" name="Leave Count" radius={[4, 4, 0, 0]}>
+                  {leaveData.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={entry.color} />
+                  ))}
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+
+        {/* Upcoming Events */}
+        <div className={`${theme.bg.secondary} rounded-xl p-6 border ${theme.border.primary} shadow-sm`}>
+          <div className="flex justify-between items-center mb-6">
+            <h2 className={`text-lg font-semibold ${theme.text.primary}`}>Upcoming Events</h2>
+            <button className="text-sm text-purple-600 dark:text-purple-400 hover:underline">View All</button>
+          </div>
+          
+          <div className="space-y-4">
+            {upcomingEvents.map((event, index) => (
+              <div key={index} className={`flex items-start gap-3 p-3 ${darkMode ? 'bg-gray-900/50 hover:bg-gray-900' : 'bg-gray-100 hover:bg-gray-200'} rounded-lg transition-colors`}>
+                <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${getEventColor(event.type)}`}>
+                  {getEventIcon(event.type)}
+                </div>
+                <div className="flex-1">
+                  <p className={`font-medium ${theme.text.primary}`}>{event.title}</p>
+                  <p className={`text-sm ${theme.text.secondary}`}>{event.time}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Quick Stats */}
+          <div className={`mt-6 pt-6 border-t ${theme.border.primary}`}>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="text-center">
+                <div className={`text-2xl font-bold ${theme.text.primary}`}>95%</div>
+                <div className={`text-sm ${theme.text.secondary}`}>Avg. Attendance</div>
+              </div>
+              <div className="text-center">
+                <div className={`text-2xl font-bold ${theme.text.primary}`}>4.2</div>
+                <div className={`text-sm ${theme.text.secondary}`}>Avg. Rating</div>
+              </div>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Department Performance Table */}
-      <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6 mb-8">
+      {/* System Status & Quick Actions */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+        {/* System Status */}
+        <div className={`${theme.bg.secondary} rounded-xl p-6 border ${theme.border.primary} shadow-sm`}>
+          <h2 className={`text-lg font-semibold ${theme.text.primary} mb-6`}>System Status</h2>
+          
+          <div className="space-y-4">
+            <div className={`flex items-center justify-between p-3 ${darkMode ? 'bg-gray-900/50' : 'bg-gray-100'} rounded-lg`}>
+              <div className="flex items-center gap-3">
+                <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
+                <div>
+                  <div className={`text-sm ${theme.text.primary}`}>Database</div>
+                  <div className={`text-xs ${theme.text.secondary}`}>System service</div>
+                </div>
+              </div>
+              <div className="text-right">
+                <div className="text-sm font-medium text-emerald-600 dark:text-emerald-400">Online</div>
+                <div className={`text-xs ${theme.text.secondary}`}>100%</div>
+              </div>
+            </div>
+            
+            <div className={`flex items-center justify-between p-3 ${darkMode ? 'bg-gray-900/50' : 'bg-gray-100'} rounded-lg`}>
+              <div className="flex items-center gap-3">
+                <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
+                <div>
+                  <div className={`text-sm ${theme.text.primary}`}>API Services</div>
+                  <div className={`text-xs ${theme.text.secondary}`}>System service</div>
+                </div>
+              </div>
+              <div className="text-right">
+                <div className="text-sm font-medium text-emerald-600 dark:text-emerald-400">Online</div>
+                <div className={`text-xs ${theme.text.secondary}`}>95%</div>
+              </div>
+            </div>
+            
+            <div className={`flex items-center justify-between p-3 ${darkMode ? 'bg-gray-900/50' : 'bg-gray-100'} rounded-lg`}>
+              <div className="flex items-center gap-3">
+                <div className="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></div>
+                <div>
+                  <div className={`text-sm ${theme.text.primary}`}>Storage</div>
+                  <div className={`text-xs ${theme.text.secondary}`}>System service</div>
+                </div>
+              </div>
+              <div className="text-right">
+                <div className="text-sm font-medium text-amber-600 dark:text-amber-400">Optimal</div>
+                <div className={`text-xs ${theme.text.secondary}`}>65% Used</div>
+              </div>
+            </div>
+            
+            <div className={`flex items-center justify-between p-3 ${darkMode ? 'bg-gray-900/50' : 'bg-gray-100'} rounded-lg`}>
+              <div className="flex items-center gap-3">
+                <div className="w-2 h-2 rounded-full bg-purple-500 animate-pulse"></div>
+                <div>
+                  <div className={`text-sm ${theme.text.primary}`}>Backup</div>
+                  <div className={`text-xs ${theme.text.secondary}`}>System service</div>
+                </div>
+              </div>
+              <div className="text-right">
+                <div className="text-sm font-medium text-purple-600 dark:text-purple-400">Synchronized</div>
+                <div className={`text-xs ${theme.text.secondary}`}>Last: 2:00 AM</div>
+              </div>
+            </div>
+          </div>
+          
+          {/* System Health */}
+          <div className="mt-6">
+            <div className={`flex justify-between text-sm ${theme.text.primary} mb-2`}>
+              <span>System Health</span>
+              <span>92%</span>
+            </div>
+            <div className={`h-2 ${darkMode ? 'bg-gray-700' : 'bg-gray-200'} rounded-full overflow-hidden`}>
+              <div 
+                className="h-full bg-gradient-to-r from-emerald-500 to-purple-500 rounded-full"
+                style={{ width: "92%" }}
+              ></div>
+            </div>
+          </div>
+        </div>
+
+        {/* Quick Actions */}
+        <div className={`${theme.bg.secondary} rounded-xl p-6 border ${theme.border.primary} shadow-sm`}>
+          <h2 className={`text-lg font-semibold ${theme.text.primary} mb-6`}>Quick Actions</h2>
+          
+          <div className="grid grid-cols-2 gap-4">
+            <button className={`flex flex-col items-center justify-center p-4 ${darkMode ? 'bg-purple-500/10 hover:bg-purple-500/20' : 'bg-purple-50 hover:bg-purple-100'} rounded-lg border ${darkMode ? 'border-purple-500/30' : 'border-purple-200'} transition-colors`}>
+              <div className={`w-10 h-10 rounded-lg ${darkMode ? 'bg-purple-500/20' : 'bg-purple-100'} flex items-center justify-center text-purple-600 dark:text-purple-400 mb-2`}>
+                <FiUsers className="w-5 h-5" />
+              </div>
+              <span className={`text-sm font-medium ${theme.text.primary}`}>Add Employee</span>
+            </button>
+            
+            <button className={`flex flex-col items-center justify-center p-4 ${darkMode ? 'bg-emerald-500/10 hover:bg-emerald-500/20' : 'bg-emerald-50 hover:bg-emerald-100'} rounded-lg border ${darkMode ? 'border-emerald-500/30' : 'border-emerald-200'} transition-colors`}>
+              <div className={`w-10 h-10 rounded-lg ${darkMode ? 'bg-emerald-500/20' : 'bg-emerald-100'} flex items-center justify-center text-emerald-600 dark:text-emerald-400 mb-2`}>
+                <FiCalendar className="w-5 h-5" />
+              </div>
+              <span className={`text-sm font-medium ${theme.text.primary}`}>Approve Leaves</span>
+            </button>
+            
+            <button className={`flex flex-col items-center justify-center p-4 ${darkMode ? 'bg-purple-500/10 hover:bg-purple-500/20' : 'bg-purple-50 hover:bg-purple-100'} rounded-lg border ${darkMode ? 'border-purple-500/30' : 'border-purple-200'} transition-colors`}>
+              <div className={`w-10 h-10 rounded-lg ${darkMode ? 'bg-purple-500/20' : 'bg-purple-100'} flex items-center justify-center text-purple-600 dark:text-purple-400 mb-2`}>
+                <FiBriefcase className="w-5 h-5" />
+              </div>
+              <span className={`text-sm font-medium ${theme.text.primary}`}>Post Job</span>
+            </button>
+            
+            <button className={`flex flex-col items-center justify-center p-4 ${darkMode ? 'bg-amber-500/10 hover:bg-amber-500/20' : 'bg-amber-50 hover:bg-amber-100'} rounded-lg border ${darkMode ? 'border-amber-500/30' : 'border-amber-200'} transition-colors`}>
+              <div className={`w-10 h-10 rounded-lg ${darkMode ? 'bg-amber-500/20' : 'bg-amber-100'} flex items-center justify-center text-amber-600 dark:text-amber-400 mb-2`}>
+                <FiTrendingUp className="w-5 h-5" />
+              </div>
+              <span className={`text-sm font-medium ${theme.text.primary}`}>View Reports</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Recent Activities Timeline */}
+      <div className={`${theme.bg.secondary} rounded-xl p-6 border ${theme.border.primary} shadow-sm`}>
         <div className="flex justify-between items-center mb-6">
           <div>
-            <h2 className="text-lg font-semibold text-slate-800">Department Performance</h2>
-            <p className="text-sm text-slate-600">Monthly metrics across departments</p>
+            <h2 className={`text-2xl font-bold ${theme.text.primary} mb-2`}>Recent Activities Timeline</h2>
+            <p className={theme.text.secondary}>Latest actions and updates from your organization</p>
           </div>
-          <button className="text-blue-500 text-sm font-medium hover:text-blue-600">
-            Export Data →
+          <button className={`text-sm text-purple-600 dark:text-purple-400 hover:underline px-4 py-2 ${darkMode ? 'bg-gray-900/50' : 'bg-gray-100'} rounded-lg border ${theme.border.primary} hover:border-purple-500/30 transition-colors`}>
+            View All Activities
           </button>
         </div>
         
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead>
-              <tr className="border-b border-slate-200">
-                <th className="text-left py-3 px-4 text-sm font-semibold text-slate-700">Department</th>
-                <th className="text-left py-3 px-4 text-sm font-semibold text-slate-700">Employees</th>
-                <th className="text-left py-3 px-4 text-sm font-semibold text-slate-700">Attendance</th>
-                <th className="text-left py-3 px-4 text-sm font-semibold text-slate-700">Productivity</th>
-                <th className="text-left py-3 px-4 text-sm font-semibold text-slate-700">Budget</th>
-                <th className="text-left py-3 px-4 text-sm font-semibold text-slate-700">Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              {departmentPerformance.map((dept, idx) => (
-                <tr key={idx} className="border-b border-slate-100 hover:bg-slate-50">
-                  <td className="py-3 px-4">
-                    <div className="flex items-center gap-3">
-                      <div className={`w-8 h-8 rounded-lg ${
-                        idx === 0 ? 'bg-blue-100 text-blue-700' :
-                        idx === 1 ? 'bg-green-100 text-green-700' :
-                        idx === 2 ? 'bg-pink-100 text-pink-700' :
-                        idx === 3 ? 'bg-purple-100 text-purple-700' :
-                        idx === 4 ? 'bg-amber-100 text-amber-700' : 'bg-cyan-100 text-cyan-700'
-                      } flex items-center justify-center font-medium`}>
-                        {dept.name.charAt(0)}
-                      </div>
-                      <span className="font-medium text-slate-800">{dept.name}</span>
-                    </div>
-                  </td>
-                  <td className="py-3 px-4">
-                    <span className="font-medium text-slate-800">{dept.employees}</span>
-                  </td>
-                  <td className="py-3 px-4">
-                    <div className="flex items-center gap-2">
-                      <div className="flex-1 bg-slate-100 rounded-full h-2">
-                        <div 
-                          className={`h-2 rounded-full ${
-                            dept.attendance >= 95 ? 'bg-green-500' :
-                            dept.attendance >= 90 ? 'bg-amber-500' : 'bg-red-500'
-                          }`}
-                          style={{ width: `${dept.attendance}%` }}
-                        ></div>
-                      </div>
-                      <span className="text-sm font-medium text-slate-800">{dept.attendance}%</span>
-                    </div>
-                  </td>
-                  <td className="py-3 px-4">
-                    <div className="flex items-center gap-2">
-                      <div className="flex-1 bg-slate-100 rounded-full h-2">
-                        <div 
-                          className={`h-2 rounded-full ${
-                            dept.productivity >= 90 ? 'bg-green-500' :
-                            dept.productivity >= 85 ? 'bg-amber-500' : 'bg-red-500'
-                          }`}
-                          style={{ width: `${dept.productivity}%` }}
-                        ></div>
-                      </div>
-                      <span className="text-sm font-medium text-slate-800">{dept.productivity}%</span>
-                    </div>
-                  </td>
-                  <td className="py-3 px-4">
-                    <span className="font-medium text-slate-800">{dept.budget}</span>
-                  </td>
-                  <td className="py-3 px-4">
-                    <span className={`px-2 py-1 text-xs rounded-full ${
-                      dept.attendance >= 95 && dept.productivity >= 90 ? 'bg-green-100 text-green-800' :
-                      dept.attendance >= 90 && dept.productivity >= 85 ? 'bg-amber-100 text-amber-800' : 'bg-red-100 text-red-800'
-                    }`}>
-                      {dept.attendance >= 95 && dept.productivity >= 90 ? 'Excellent' :
-                       dept.attendance >= 90 && dept.productivity >= 85 ? 'Good' : 'Needs Attention'}
-                    </span>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          {recentActivities.map((activity, index) => (
+            <div key={index} className={`${darkMode ? 'bg-gray-900/50' : 'bg-gray-100'} rounded-xl p-4 border ${theme.border.primary} hover:border-purple-500/30 transition-colors`}>
+              <div className="flex items-center gap-3 mb-3">
+                <div className="relative">
+                  <div className={`w-10 h-10 rounded-full ${darkMode ? 'bg-gray-800' : 'bg-white'} flex items-center justify-center`}>
+                    {getStatusIcon(activity.status)}
+                  </div>
+                </div>
+                <div>
+                  <p className={`font-medium ${theme.text.primary}`}>{activity.user}</p>
+                  <p className="text-xs text-gray-500">Team Member</p>
+                </div>
+              </div>
+              
+              <p className={`text-sm ${theme.text.secondary} mb-2`}>
+                {activity.action}
+              </p>
+              
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2 text-xs text-gray-500">
+                  <FiClock className="w-3 h-3" />
+                  <span>{activity.time}</span>
+                </div>
+                <div className={`text-xs px-2 py-1 rounded-full ${
+                  activity.status === "success" ? 
+                    `${darkMode ? 'bg-emerald-500/20 text-emerald-400' : 'bg-emerald-100 text-emerald-700'}` :
+                  activity.status === "warning" ? 
+                    `${darkMode ? 'bg-amber-500/20 text-amber-400' : 'bg-amber-100 text-amber-700'}` :
+                  `${darkMode ? 'bg-purple-500/20 text-purple-400' : 'bg-purple-100 text-purple-700'}`
+                }`}>
+                  {activity.status}
+                </div>
+              </div>
+            </div>
+          ))}
         </div>
       </div>
-
-      {/* System Alerts */}
-      <div className="bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 rounded-xl p-6">
-        <div className="flex items-center gap-3 mb-4">
-          <FiAlertCircle className="w-5 h-5 text-amber-600" />
-          <h2 className="text-lg font-semibold text-amber-800">System Alerts</h2>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="p-4 bg-white/70 rounded-lg">
-            <p className="text-sm font-medium text-slate-800">Payroll Processing</p>
-            <p className="text-xs text-slate-600">Due in 3 days</p>
-          </div>
-          <div className="p-4 bg-white/70 rounded-lg">
-            <p className="text-sm font-medium text-slate-800">Quarterly Reports</p>
-            <p className="text-xs text-slate-600">Review required</p>
-          </div>
-          <div className="p-4 bg-white/70 rounded-lg">
-            <p className="text-sm font-medium text-slate-800">2 Contracts Expiring</p>
-            <p className="text-xs text-slate-600">Action needed</p>
-          </div>
-        </div>
-      </div>
-    </AdminLayout>
+    </>
   );
 };
 

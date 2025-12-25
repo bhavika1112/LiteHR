@@ -1,8 +1,10 @@
 import React, { useState } from "react";
-import AdminLayout from "../../../layouts/AdminLayout";
 import { FiSave, FiEdit2, FiCheck, FiX, FiCalendar, FiInfo } from "react-icons/fi";
+import { useTheme, getThemeClasses } from "../../../contexts/ThemeContext";
 
 const LeavePolicy = () => {
+  const darkMode = useTheme();
+  const theme = getThemeClasses(darkMode);
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({
     earnedLeave: {
@@ -52,6 +54,14 @@ const LeavePolicy = () => {
     overtimeRate: "1.5x",
   });
 
+  const cardBg = darkMode ? 'bg-gray-800' : 'bg-white';
+  const cardBorder = darkMode ? 'border-gray-700' : 'border-gray-200';
+  const textPrimary = darkMode ? 'text-white' : 'text-gray-900';
+  const textSecondary = darkMode ? 'text-gray-400' : 'text-gray-600';
+  const inputBg = darkMode ? 'bg-gray-900' : 'bg-gray-50';
+  const inputBorder = darkMode ? 'border-gray-700' : 'border-gray-300';
+  const hoverBg = darkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-100';
+
   const handleSave = () => {
     console.log("Saving leave policy:", formData);
     setIsEditing(false);
@@ -81,53 +91,57 @@ const LeavePolicy = () => {
   };
 
   return (
-    <AdminLayout>
+    <div className="w-full">
       {/* Header */}
-      <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 mb-8">
-        <div>
-          <h1 className="text-3xl font-bold text-slate-800 mb-2">Leave Policy</h1>
-          <p className="text-slate-600">
-            Define and manage company leave policies and working hours.
-          </p>
-        </div>
-        
-        <div className="flex gap-3">
-          {isEditing ? (
-            <>
+      <div className="mb-8">
+        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 mb-6">
+          <div>
+            <h1 className={`text-3xl font-bold ${textPrimary}`}>
+              Leave Policy Management
+            </h1>
+            <p className={textSecondary}>
+              Define and manage company leave policies and working hours.
+            </p>
+          </div>
+          
+          <div className="flex gap-3">
+            {isEditing ? (
+              <>
+                <button
+                  onClick={handleCancel}
+                  className={`flex items-center gap-2 px-4 py-2.5 ${inputBg} border ${inputBorder} ${textPrimary} rounded-lg ${hoverBg} font-medium`}
+                >
+                  <FiX className="w-4 h-4" />
+                  Cancel
+                </button>
+                <button
+                  onClick={handleSave}
+                  className="flex items-center gap-2 px-4 py-2.5 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-medium"
+                >
+                  <FiSave className="w-4 h-4" />
+                  Save Changes
+                </button>
+              </>
+            ) : (
               <button
-                onClick={handleCancel}
-                className="flex items-center gap-2 px-4 py-2.5 border border-red-300 text-red-600 rounded-lg hover:bg-red-50 font-medium"
+                onClick={() => setIsEditing(true)}
+                className="flex items-center gap-2 px-4 py-2.5 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-medium"
               >
-                <FiX className="w-4 h-4" />
-                Cancel
+                <FiEdit2 className="w-4 h-4" />
+                Edit Policy
               </button>
-              <button
-                onClick={handleSave}
-                className="flex items-center gap-2 px-4 py-2.5 bg-green-500 text-white rounded-lg hover:bg-green-600 font-medium"
-              >
-                <FiSave className="w-4 h-4" />
-                Save Changes
-              </button>
-            </>
-          ) : (
-            <button
-              onClick={() => setIsEditing(true)}
-              className="flex items-center gap-2 px-4 py-2.5 bg-blue-500 text-white rounded-lg hover:bg-blue-600 font-medium"
-            >
-              <FiEdit2 className="w-4 h-4" />
-              Edit Policy
-            </button>
-          )}
+            )}
+          </div>
         </div>
       </div>
 
       {/* Information Banner */}
-      <div className="bg-gradient-to-r from-blue-50 to-cyan-50 border border-blue-200 rounded-xl p-6 mb-8">
+      <div className={`${cardBg} rounded-xl p-6 border ${cardBorder} mb-8`}>
         <div className="flex items-start gap-3">
-          <FiInfo className="w-6 h-6 text-blue-500 flex-shrink-0 mt-1" />
+          <FiInfo className={`w-6 h-6 ${darkMode ? 'text-purple-400' : 'text-purple-600'} flex-shrink-0 mt-1`} />
           <div>
-            <h3 className="text-lg font-semibold text-blue-800 mb-2">Leave Policy Guidelines</h3>
-            <p className="text-blue-700">
+            <h3 className={`text-lg font-semibold ${textPrimary} mb-2`}>Leave Policy Guidelines</h3>
+            <p className={`${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
               These policies apply to all permanent employees. Probationary employees are eligible for casual and sick leave only.
               All leave requests must be submitted through the HR system with proper documentation where required.
             </p>
@@ -136,15 +150,15 @@ const LeavePolicy = () => {
       </div>
 
       {/* Working Hours */}
-      <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6 mb-8">
+      <div className={`${cardBg} rounded-xl p-6 border ${cardBorder} mb-8`}>
         <div className="flex justify-between items-center mb-6">
-          <h3 className="text-xl font-semibold text-slate-800">Working Hours & Days</h3>
-          <span className="text-sm text-slate-600">Standard company schedule</span>
+          <h3 className={`text-xl font-semibold ${textPrimary}`}>Working Hours & Days</h3>
+          <span className={`text-sm ${textSecondary}`}>Standard company schedule</span>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <div>
-            <label className="block text-sm font-medium text-slate-800 mb-2">
+            <label className={`block text-sm font-medium ${textPrimary} mb-2`}>
               Start Time
             </label>
             {isEditing ? (
@@ -152,17 +166,17 @@ const LeavePolicy = () => {
                 type="time"
                 value={workingHours.startTime}
                 onChange={(e) => handleWorkingHoursChange("startTime", e.target.value)}
-                className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
+                className={`w-full px-4 py-3 ${inputBg} border ${inputBorder} ${textPrimary} rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500`}
               />
             ) : (
-              <div className="px-4 py-3 bg-slate-50 rounded-lg border border-slate-200">
-                <span className="text-lg font-medium text-slate-800">{workingHours.startTime}</span>
+              <div className={`px-4 py-3 ${inputBg} rounded-lg border ${inputBorder}`}>
+                <span className={`text-lg font-medium ${textPrimary}`}>{workingHours.startTime}</span>
               </div>
             )}
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-slate-800 mb-2">
+            <label className={`block text-sm font-medium ${textPrimary} mb-2`}>
               End Time
             </label>
             {isEditing ? (
@@ -170,17 +184,17 @@ const LeavePolicy = () => {
                 type="time"
                 value={workingHours.endTime}
                 onChange={(e) => handleWorkingHoursChange("endTime", e.target.value)}
-                className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
+                className={`w-full px-4 py-3 ${inputBg} border ${inputBorder} ${textPrimary} rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500`}
               />
             ) : (
-              <div className="px-4 py-3 bg-slate-50 rounded-lg border border-slate-200">
-                <span className="text-lg font-medium text-slate-800">{workingHours.endTime}</span>
+              <div className={`px-4 py-3 ${inputBg} rounded-lg border ${inputBorder}`}>
+                <span className={`text-lg font-medium ${textPrimary}`}>{workingHours.endTime}</span>
               </div>
             )}
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-slate-800 mb-2">
+            <label className={`block text-sm font-medium ${textPrimary} mb-2`}>
               Break Time (minutes)
             </label>
             {isEditing ? (
@@ -188,17 +202,17 @@ const LeavePolicy = () => {
                 type="number"
                 value={workingHours.breakTime}
                 onChange={(e) => handleWorkingHoursChange("breakTime", e.target.value)}
-                className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
+                className={`w-full px-4 py-3 ${inputBg} border ${inputBorder} ${textPrimary} rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500`}
               />
             ) : (
-              <div className="px-4 py-3 bg-slate-50 rounded-lg border border-slate-200">
-                <span className="text-lg font-medium text-slate-800">{workingHours.breakTime} mins</span>
+              <div className={`px-4 py-3 ${inputBg} rounded-lg border ${inputBorder}`}>
+                <span className={`text-lg font-medium ${textPrimary}`}>{workingHours.breakTime} mins</span>
               </div>
             )}
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-slate-800 mb-2">
+            <label className={`block text-sm font-medium ${textPrimary} mb-2`}>
               Overtime Rate
             </label>
             {isEditing ? (
@@ -206,12 +220,12 @@ const LeavePolicy = () => {
                 type="text"
                 value={workingHours.overtimeRate}
                 onChange={(e) => handleWorkingHoursChange("overtimeRate", e.target.value)}
-                className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
+                className={`w-full px-4 py-3 ${inputBg} border ${inputBorder} ${textPrimary} rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500`}
                 placeholder="e.g., 1.5x"
               />
             ) : (
-              <div className="px-4 py-3 bg-slate-50 rounded-lg border border-slate-200">
-                <span className="text-lg font-medium text-slate-800">{workingHours.overtimeRate}</span>
+              <div className={`px-4 py-3 ${inputBg} rounded-lg border ${inputBorder}`}>
+                <span className={`text-lg font-medium ${textPrimary}`}>{workingHours.overtimeRate}</span>
               </div>
             )}
           </div>
@@ -219,7 +233,7 @@ const LeavePolicy = () => {
 
         {/* Working Days */}
         <div className="mt-6">
-          <label className="block text-sm font-medium text-slate-800 mb-2">
+          <label className={`block text-sm font-medium ${textPrimary} mb-2`}>
             Working Days
           </label>
           <div className="flex flex-wrap gap-3">
@@ -238,17 +252,17 @@ const LeavePolicy = () => {
                           handleWorkingHoursChange("workingDays", workingHours.workingDays.filter(d => d !== day));
                         }
                       }}
-                      className="rounded border-slate-300 text-blue-500 focus:ring-blue-200"
+                      className={`rounded ${darkMode ? 'border-gray-600 bg-gray-900' : 'border-gray-300 bg-white'} text-purple-500 focus:ring-purple-500/20`}
                     />
                   ) : (
                     <div className={`w-5 h-5 rounded border flex items-center justify-center ${
-                      isSelected ? 'bg-blue-500 border-blue-500' : 'bg-white border-slate-300'
+                      isSelected ? 'bg-purple-600 border-transparent' : `${inputBg} ${inputBorder}`
                     }`}>
                       {isSelected && <FiCheck className="w-3 h-3 text-white" />}
                     </div>
                   )}
                   <span className={`font-medium ${
-                    isSelected ? 'text-slate-800' : 'text-slate-500'
+                    isSelected ? textPrimary : textSecondary
                   }`}>
                     {day}
                   </span>
@@ -262,21 +276,21 @@ const LeavePolicy = () => {
       {/* Leave Types */}
       <div className="space-y-6">
         {/* Earned Leave */}
-        <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+        <div className={`${cardBg} rounded-xl p-6 border ${cardBorder}`}>
           <div className="flex items-center gap-3 mb-6">
-            <div className="w-12 h-12 rounded-lg bg-green-100 flex items-center justify-center">
-              <FiCalendar className="w-6 h-6 text-green-600" />
+            <div className={`w-12 h-12 rounded-lg ${darkMode ? 'bg-purple-500/20' : 'bg-purple-100'} flex items-center justify-center`}>
+              <FiCalendar className={`w-6 h-6 ${darkMode ? 'text-purple-400' : 'text-purple-600'}`} />
             </div>
             <div>
-              <h3 className="text-xl font-semibold text-slate-800">Earned Leave / Privilege Leave</h3>
-              <p className="text-slate-600">Annual paid leave accrued monthly</p>
+              <h3 className={`text-xl font-semibold ${textPrimary}`}>Earned Leave / Privilege Leave</h3>
+              <p className={textSecondary}>Annual paid leave accrued monthly</p>
             </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {Object.entries(formData.earnedLeave).map(([key, value]) => (
               <div key={key}>
-                <label className="block text-sm font-medium text-slate-800 mb-2 capitalize">
+                <label className={`block text-sm font-medium ${darkMode ? 'text-gray-300' : 'text-gray-700'} mb-2 capitalize`}>
                   {key.replace(/([A-Z])/g, ' $1').trim()}
                 </label>
                 {isEditing ? (
@@ -284,11 +298,11 @@ const LeavePolicy = () => {
                     type="text"
                     value={value}
                     onChange={(e) => handleChange("earnedLeave", key, e.target.value)}
-                    className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
+                    className={`w-full px-4 py-3 ${inputBg} border ${inputBorder} ${textPrimary} rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500`}
                   />
                 ) : (
-                  <div className="px-4 py-3 bg-slate-50 rounded-lg border border-slate-200">
-                    <span className="text-lg font-medium text-slate-800">{value}</span>
+                  <div className={`px-4 py-3 ${inputBg} rounded-lg border ${inputBorder}`}>
+                    <span className={`text-lg font-medium ${textPrimary}`}>{value}</span>
                   </div>
                 )}
               </div>
@@ -297,21 +311,21 @@ const LeavePolicy = () => {
         </div>
 
         {/* Sick Leave */}
-        <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+        <div className={`${cardBg} rounded-xl p-6 border ${cardBorder}`}>
           <div className="flex items-center gap-3 mb-6">
-            <div className="w-12 h-12 rounded-lg bg-amber-100 flex items-center justify-center">
-              <FiCalendar className="w-6 h-6 text-amber-600" />
+            <div className={`w-12 h-12 rounded-lg ${darkMode ? 'bg-purple-500/20' : 'bg-purple-100'} flex items-center justify-center`}>
+              <FiCalendar className={`w-6 h-6 ${darkMode ? 'text-purple-400' : 'text-purple-600'}`} />
             </div>
             <div>
-              <h3 className="text-xl font-semibold text-slate-800">Sick Leave</h3>
-              <p className="text-slate-600">Medical leave with documentation requirements</p>
+              <h3 className={`text-xl font-semibold ${textPrimary}`}>Sick Leave</h3>
+              <p className={textSecondary}>Medical leave with documentation requirements</p>
             </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {Object.entries(formData.sickLeave).map(([key, value]) => (
               <div key={key}>
-                <label className="block text-sm font-medium text-slate-800 mb-2 capitalize">
+                <label className={`block text-sm font-medium ${darkMode ? 'text-gray-300' : 'text-gray-700'} mb-2 capitalize`}>
                   {key.replace(/([A-Z])/g, ' $1').trim()}
                 </label>
                 {isEditing ? (
@@ -319,11 +333,11 @@ const LeavePolicy = () => {
                     type="text"
                     value={value}
                     onChange={(e) => handleChange("sickLeave", key, e.target.value)}
-                    className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
+                    className={`w-full px-4 py-3 ${inputBg} border ${inputBorder} ${textPrimary} rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500`}
                   />
                 ) : (
-                  <div className="px-4 py-3 bg-slate-50 rounded-lg border border-slate-200">
-                    <span className="text-lg font-medium text-slate-800">{value}</span>
+                  <div className={`px-4 py-3 ${inputBg} rounded-lg border ${inputBorder}`}>
+                    <span className={`text-lg font-medium ${textPrimary}`}>{value}</span>
                   </div>
                 )}
               </div>
@@ -332,21 +346,21 @@ const LeavePolicy = () => {
         </div>
 
         {/* Casual Leave */}
-        <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+        <div className={`${cardBg} rounded-xl p-6 border ${cardBorder}`}>
           <div className="flex items-center gap-3 mb-6">
-            <div className="w-12 h-12 rounded-lg bg-blue-100 flex items-center justify-center">
-              <FiCalendar className="w-6 h-6 text-blue-600" />
+            <div className={`w-12 h-12 rounded-lg ${darkMode ? 'bg-purple-500/20' : 'bg-purple-100'} flex items-center justify-center`}>
+              <FiCalendar className={`w-6 h-6 ${darkMode ? 'text-purple-400' : 'text-purple-600'}`} />
             </div>
             <div>
-              <h3 className="text-xl font-semibold text-slate-800">Casual Leave</h3>
-              <p className="text-slate-600">Short notice personal leave</p>
+              <h3 className={`text-xl font-semibold ${textPrimary}`}>Casual Leave</h3>
+              <p className={textSecondary}>Short notice personal leave</p>
             </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {Object.entries(formData.casualLeave).map(([key, value]) => (
               <div key={key}>
-                <label className="block text-sm font-medium text-slate-800 mb-2 capitalize">
+                <label className={`block text-sm font-medium ${darkMode ? 'text-gray-300' : 'text-gray-700'} mb-2 capitalize`}>
                   {key.replace(/([A-Z])/g, ' $1').trim()}
                 </label>
                 {isEditing ? (
@@ -354,11 +368,11 @@ const LeavePolicy = () => {
                     type="text"
                     value={value}
                     onChange={(e) => handleChange("casualLeave", key, e.target.value)}
-                    className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
+                    className={`w-full px-4 py-3 ${inputBg} border ${inputBorder} ${textPrimary} rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500`}
                   />
                 ) : (
-                  <div className="px-4 py-3 bg-slate-50 rounded-lg border border-slate-200">
-                    <span className="text-lg font-medium text-slate-800">{value}</span>
+                  <div className={`px-4 py-3 ${inputBg} rounded-lg border ${inputBorder}`}>
+                    <span className={`text-lg font-medium ${textPrimary}`}>{value}</span>
                   </div>
                 )}
               </div>
@@ -369,20 +383,20 @@ const LeavePolicy = () => {
         {/* Special Leaves Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Maternity Leave */}
-          <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+          <div className={`${cardBg} rounded-xl p-6 border ${cardBorder}`}>
             <div className="flex items-center gap-3 mb-6">
-              <div className="w-10 h-10 rounded-lg bg-pink-100 flex items-center justify-center">
-                <FiCalendar className="w-5 h-5 text-pink-600" />
+              <div className={`w-10 h-10 rounded-lg ${darkMode ? 'bg-purple-500/20' : 'bg-purple-100'} flex items-center justify-center`}>
+                <FiCalendar className={`w-5 h-5 ${darkMode ? 'text-purple-400' : 'text-purple-600'}`} />
               </div>
               <div>
-                <h3 className="text-lg font-semibold text-slate-800">Maternity Leave</h3>
+                <h3 className={`text-lg font-semibold ${textPrimary}`}>Maternity Leave</h3>
               </div>
             </div>
 
             <div className="space-y-4">
               {Object.entries(formData.maternityLeave).map(([key, value]) => (
                 <div key={key}>
-                  <label className="block text-sm font-medium text-slate-800 mb-1 capitalize">
+                  <label className={`block text-sm font-medium ${darkMode ? 'text-gray-300' : 'text-gray-700'} mb-1 capitalize`}>
                     {key.replace(/([A-Z])/g, ' $1').trim()}
                   </label>
                   {isEditing ? (
@@ -390,11 +404,11 @@ const LeavePolicy = () => {
                       type="text"
                       value={value}
                       onChange={(e) => handleChange("maternityLeave", key, e.target.value)}
-                      className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-sm"
+                      className={`w-full px-3 py-2 ${inputBg} border ${inputBorder} ${textPrimary} rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 text-sm`}
                     />
                   ) : (
-                    <div className="px-3 py-2 bg-slate-50 rounded-lg border border-slate-200">
-                      <span className="text-sm font-medium text-slate-800">{value}</span>
+                    <div className={`px-3 py-2 ${inputBg} rounded-lg border ${inputBorder}`}>
+                      <span className={`text-sm font-medium ${textPrimary}`}>{value}</span>
                     </div>
                   )}
                 </div>
@@ -403,20 +417,20 @@ const LeavePolicy = () => {
           </div>
 
           {/* Paternity Leave */}
-          <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+          <div className={`${cardBg} rounded-xl p-6 border ${cardBorder}`}>
             <div className="flex items-center gap-3 mb-6">
-              <div className="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center">
-                <FiCalendar className="w-5 h-5 text-blue-600" />
+              <div className={`w-10 h-10 rounded-lg ${darkMode ? 'bg-purple-500/20' : 'bg-purple-100'} flex items-center justify-center`}>
+                <FiCalendar className={`w-5 h-5 ${darkMode ? 'text-purple-400' : 'text-purple-600'}`} />
               </div>
               <div>
-                <h3 className="text-lg font-semibold text-slate-800">Paternity Leave</h3>
+                <h3 className={`text-lg font-semibold ${textPrimary}`}>Paternity Leave</h3>
               </div>
             </div>
 
             <div className="space-y-4">
               {Object.entries(formData.paternityLeave).map(([key, value]) => (
                 <div key={key}>
-                  <label className="block text-sm font-medium text-slate-800 mb-1 capitalize">
+                  <label className={`block text-sm font-medium ${darkMode ? 'text-gray-300' : 'text-gray-700'} mb-1 capitalize`}>
                     {key.replace(/([A-Z])/g, ' $1').trim()}
                   </label>
                   {isEditing ? (
@@ -424,11 +438,11 @@ const LeavePolicy = () => {
                       type="text"
                       value={value}
                       onChange={(e) => handleChange("paternityLeave", key, e.target.value)}
-                      className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-sm"
+                      className={`w-full px-3 py-2 ${inputBg} border ${inputBorder} ${textPrimary} rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 text-sm`}
                     />
                   ) : (
-                    <div className="px-3 py-2 bg-slate-50 rounded-lg border border-slate-200">
-                      <span className="text-sm font-medium text-slate-800">{value}</span>
+                    <div className={`px-3 py-2 ${inputBg} rounded-lg border ${inputBorder}`}>
+                      <span className={`text-sm font-medium ${textPrimary}`}>{value}</span>
                     </div>
                   )}
                 </div>
@@ -437,13 +451,13 @@ const LeavePolicy = () => {
           </div>
 
           {/* Bereavement Leave */}
-          <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+          <div className={`${cardBg} rounded-xl p-6 border ${cardBorder}`}>
             <div className="flex items-center gap-3 mb-6">
-              <div className="w-10 h-10 rounded-lg bg-slate-100 flex items-center justify-center">
-                <FiCalendar className="w-5 h-5 text-slate-600" />
+              <div className={`w-10 h-10 rounded-lg ${darkMode ? 'bg-purple-500/20' : 'bg-purple-100'} flex items-center justify-center`}>
+                <FiCalendar className={`w-5 h-5 ${darkMode ? 'text-purple-400' : 'text-purple-600'}`} />
               </div>
               <div>
-                <h3 className="text-lg font-semibold text-slate-800">Bereavement Leave</h3>
+                <h3 className={`text-lg font-semibold ${textPrimary}`}>Bereavement Leave</h3>
               </div>
             </div>
 
@@ -452,19 +466,19 @@ const LeavePolicy = () => {
                 if (key === 'relationships') {
                   return (
                     <div key={key}>
-                      <label className="block text-sm font-medium text-slate-800 mb-1 capitalize">
+                      <label className={`block text-sm font-medium ${darkMode ? 'text-gray-300' : 'text-gray-700'} mb-1 capitalize`}>
                         {key}
                       </label>
                       {isEditing ? (
                         <textarea
                           value={value.join(', ')}
                           onChange={(e) => handleChange("bereavementLeave", key, e.target.value.split(', '))}
-                          className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-sm"
+                          className={`w-full px-3 py-2 ${inputBg} border ${inputBorder} ${textPrimary} rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 text-sm`}
                           rows="2"
                         />
                       ) : (
-                        <div className="px-3 py-2 bg-slate-50 rounded-lg border border-slate-200">
-                          <span className="text-sm font-medium text-slate-800">{value.join(', ')}</span>
+                        <div className={`px-3 py-2 ${inputBg} rounded-lg border ${inputBorder}`}>
+                          <span className={`text-sm font-medium ${textPrimary}`}>{value.join(', ')}</span>
                         </div>
                       )}
                     </div>
@@ -472,7 +486,7 @@ const LeavePolicy = () => {
                 }
                 return (
                   <div key={key}>
-                    <label className="block text-sm font-medium text-slate-800 mb-1 capitalize">
+                    <label className={`block text-sm font-medium ${darkMode ? 'text-gray-300' : 'text-gray-700'} mb-1 capitalize`}>
                       {key.replace(/([A-Z])/g, ' $1').trim()}
                     </label>
                     {isEditing ? (
@@ -480,11 +494,11 @@ const LeavePolicy = () => {
                         type="text"
                         value={value}
                         onChange={(e) => handleChange("bereavementLeave", key, e.target.value)}
-                        className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-sm"
+                        className={`w-full px-3 py-2 ${inputBg} border ${inputBorder} ${textPrimary} rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 text-sm`}
                       />
                     ) : (
-                      <div className="px-3 py-2 bg-slate-50 rounded-lg border border-slate-200">
-                        <span className="text-sm font-medium text-slate-800">{value}</span>
+                      <div className={`px-3 py-2 ${inputBg} rounded-lg border ${inputBorder}`}>
+                        <span className={`text-sm font-medium ${textPrimary}`}>{value}</span>
                       </div>
                     )}
                   </div>
@@ -496,9 +510,9 @@ const LeavePolicy = () => {
       </div>
 
       {/* Policy Notes */}
-      <div className="mt-8 bg-gradient-to-r from-slate-50 to-white border border-slate-200 rounded-xl p-6">
-        <h3 className="text-lg font-semibold text-slate-800 mb-4">Policy Notes & Guidelines</h3>
-        <div className="space-y-3 text-slate-700">
+      <div className={`${cardBg} rounded-xl p-6 border ${cardBorder} mt-8`}>
+        <h3 className={`text-lg font-semibold ${textPrimary} mb-4`}>Policy Notes & Guidelines</h3>
+        <div className={`space-y-3 ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
           <p>• All leave requests must be submitted at least {formData.earnedLeave.noticePeriod} in advance (except for sick/emergency leave)</p>
           <p>• Unused leave can be carried forward up to {formData.earnedLeave.maxAccumulation} days (for earned leave only)</p>
           <p>• Medical certificate is mandatory for sick leave beyond {formData.sickLeave.maxPerIncident} consecutive days</p>
@@ -512,20 +526,20 @@ const LeavePolicy = () => {
         <div className="mt-8 flex justify-end gap-3">
           <button
             onClick={handleCancel}
-            className="px-6 py-3 border border-red-300 text-red-600 rounded-lg hover:bg-red-50 font-medium"
+            className={`px-6 py-3 ${inputBg} border ${inputBorder} ${textPrimary} rounded-lg ${hoverBg} font-medium`}
           >
             Cancel
           </button>
           <button
             onClick={handleSave}
-            className="flex items-center gap-2 px-6 py-3 bg-green-500 text-white rounded-lg hover:bg-green-600 font-medium"
+            className="flex items-center gap-2 px-6 py-3 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-medium"
           >
             <FiSave className="w-5 h-5" />
             Save All Changes
           </button>
         </div>
       )}
-    </AdminLayout>
+    </div>
   );
 };
 

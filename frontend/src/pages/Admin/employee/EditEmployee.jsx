@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
-import AdminLayout from "../../../layouts/AdminLayout";
 import { FiSave, FiArrowLeft, FiTrash2, FiUser, FiMail, FiPhone, FiCalendar, FiMapPin, FiBriefcase, FiUpload } from "react-icons/fi";
 import { HiOutlineOfficeBuilding } from "react-icons/hi";
 import { Link, useParams, useNavigate } from "react-router-dom";
+import { useTheme, useThemeClasses } from "../../../contexts/ThemeContext";
 
 const EditEmployee = () => {
   const { id } = useParams();
@@ -11,6 +11,8 @@ const EditEmployee = () => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [hasChanges, setHasChanges] = useState(false);
 
+const darkMode = useTheme() || false; // Default to false if undefined
+const theme = useThemeClasses();
   const [formData, setFormData] = useState({
     employeeId: "EMP001",
     firstName: "Rahul",
@@ -117,19 +119,21 @@ const EditEmployee = () => {
   };
 
   return (
-    <AdminLayout>
+    <div className="w-full">
       {/* Header */}
       <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 mb-8">
         <div className="flex items-center gap-4">
           <Link
             to="/admin/employees"
-            className="p-2 rounded-lg hover:bg-slate-100 text-slate-600"
+            className={`p-2 rounded-lg ${theme.bg.secondary} border ${theme.border.primary} ${theme.text.secondary} hover:text-purple-600 hover:border-purple-500 transition-colors`}
           >
             <FiArrowLeft className="w-5 h-5" />
           </Link>
           <div>
-            <h1 className="text-3xl font-bold text-slate-800 mb-2">Edit Employee</h1>
-            <p className="text-slate-600">
+            <h1 className={`text-3xl font-bold ${theme.text.primary} mb-2`}>
+              Edit Employee
+            </h1>
+            <p className={theme.text.secondary}>
               Update existing employee details. All changes are tracked and reversible.
             </p>
           </div>
@@ -138,7 +142,7 @@ const EditEmployee = () => {
         <div className="flex gap-3">
           <button
             onClick={() => setShowDeleteModal(true)}
-            className="flex items-center gap-2 px-4 py-2.5 border border-red-300 text-red-600 rounded-lg hover:bg-red-50 font-medium"
+            className={`flex items-center gap-2 px-4 py-2.5 ${theme.bg.secondary} border border-rose-600 text-rose-600 dark:text-rose-400 rounded-lg hover:border-rose-500 hover:text-rose-700 dark:hover:text-rose-300 transition-colors`}
           >
             <FiTrash2 className="w-4 h-4" />
             Delete Employee
@@ -148,53 +152,57 @@ const EditEmployee = () => {
 
       {/* Employee Stats */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-        <div className="bg-white rounded-xl p-5 border border-slate-200 shadow-sm">
+        {/* Attendance Rate */}
+        <div className={`${theme.bg.secondary} rounded-xl p-5 border ${theme.border.primary} shadow-sm`}>
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-slate-600">Attendance Rate</p>
-              <h3 className="text-3xl font-bold text-slate-800 mt-2">{employeeStats.attendance}%</h3>
+              <p className={`text-sm ${theme.text.secondary}`}>Attendance Rate</p>
+              <h3 className={`text-3xl font-bold ${theme.text.primary} mt-2`}>{employeeStats.attendance}%</h3>
             </div>
-            <div className="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center">
-              <FiCalendar className="w-6 h-6 text-green-500" />
+            <div className={`w-12 h-12 rounded-full ${darkMode ? 'bg-emerald-500/20' : 'bg-emerald-100'} flex items-center justify-center`}>
+              <FiCalendar className="w-6 h-6 text-emerald-500 dark:text-emerald-400" />
             </div>
           </div>
         </div>
 
-        <div className="bg-white rounded-xl p-5 border border-slate-200 shadow-sm">
+        {/* Performance */}
+        <div className={`${theme.bg.secondary} rounded-xl p-5 border ${theme.border.primary} shadow-sm`}>
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-slate-600">Performance</p>
-              <h3 className="text-3xl font-bold text-slate-800 mt-2">{employeeStats.performance}/5.0</h3>
+              <p className={`text-sm ${theme.text.secondary}`}>Performance</p>
+              <h3 className={`text-3xl font-bold ${theme.text.primary} mt-2`}>{employeeStats.performance}/5.0</h3>
             </div>
-            <div className="w-12 h-12 rounded-full bg-amber-100 flex items-center justify-center">
-              <span className="text-2xl font-bold text-amber-600">★</span>
+            <div className={`w-12 h-12 rounded-full ${darkMode ? 'bg-amber-500/20' : 'bg-amber-100'} flex items-center justify-center`}>
+              <span className="text-2xl text-amber-500 dark:text-amber-400">★</span>
             </div>
           </div>
         </div>
 
-        <div className="bg-white rounded-xl p-5 border border-slate-200 shadow-sm">
+        {/* Leaves Used */}
+        <div className={`${theme.bg.secondary} rounded-xl p-5 border ${theme.border.primary} shadow-sm`}>
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-slate-600">Leaves Used</p>
-              <h3 className="text-3xl font-bold text-slate-800 mt-2">{employeeStats.leavesUsed}</h3>
+              <p className={`text-sm ${theme.text.secondary}`}>Leaves Used</p>
+              <h3 className={`text-3xl font-bold ${theme.text.primary} mt-2`}>{employeeStats.leavesUsed}</h3>
             </div>
-            <div className="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center">
-              <svg className="w-6 h-6 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className={`w-12 h-12 rounded-full ${darkMode ? 'bg-purple-500/20' : 'bg-purple-100'} flex items-center justify-center`}>
+              <svg className="w-6 h-6 text-purple-500 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
               </svg>
             </div>
           </div>
         </div>
 
-        <div className="bg-white rounded-xl p-5 border border-slate-200 shadow-sm">
+        {/* Leaves Remaining */}
+        <div className={`${theme.bg.secondary} rounded-xl p-5 border ${theme.border.primary} shadow-sm`}>
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-slate-600">Leaves Remaining</p>
-              <h3 className="text-3xl font-bold text-slate-800 mt-2">{employeeStats.leavesRemaining}</h3>
+              <p className={`text-sm ${theme.text.secondary}`}>Leaves Remaining</p>
+              <h3 className={`text-3xl font-bold ${theme.text.primary} mt-2`}>{employeeStats.leavesRemaining}</h3>
             </div>
-            <div className="w-12 h-12 rounded-full bg-emerald-100 flex items-center justify-center">
-              <svg className="w-6 h-6 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5" />
+            <div className={`w-12 h-12 rounded-full ${darkMode ? 'bg-blue-500/20' : 'bg-blue-100'} flex items-center justify-center`}>
+              <svg className="w-6 h-6 text-blue-500 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
               </svg>
             </div>
           </div>
@@ -202,11 +210,11 @@ const EditEmployee = () => {
       </div>
 
       {/* Form */}
-      <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-        <div className="p-6 border-b border-slate-200 bg-gradient-to-r from-slate-50 to-white">
+      <div className={`${theme.bg.secondary} rounded-xl border ${theme.border.primary} shadow-sm mb-8 overflow-hidden`}>
+        <div className={`p-6 border-b ${theme.border.primary} ${darkMode ? 'bg-gray-900/50' : 'bg-gray-100'}`}>
           <div className="flex items-center gap-4">
             <div className="relative">
-              <div className="w-16 h-16 rounded-full border-2 border-white shadow-md overflow-hidden">
+              <div className={`w-16 h-16 rounded-full border-2 ${darkMode ? 'border-gray-600' : 'border-gray-300'} shadow-md overflow-hidden`}>
                 {formData.profileImage ? (
                   <img
                     src={URL.createObjectURL(formData.profileImage)}
@@ -214,12 +222,12 @@ const EditEmployee = () => {
                     className="w-full h-full object-cover"
                   />
                 ) : (
-                  <div className="w-full h-full bg-gradient-to-r from-blue-500 to-cyan-500 flex items-center justify-center text-white text-xl font-bold">
+                  <div className="w-full h-full bg-gradient-to-r from-purple-600 to-purple-400 flex items-center justify-center text-white text-xl font-bold">
                     {formData.firstName.charAt(0)}{formData.lastName.charAt(0)}
                   </div>
                 )}
               </div>
-              <label className="absolute bottom-0 right-0 w-6 h-6 bg-blue-500 text-white rounded-full flex items-center justify-center cursor-pointer hover:bg-blue-600">
+              <label className="absolute bottom-0 right-0 w-6 h-6 bg-purple-500 text-white rounded-full flex items-center justify-center cursor-pointer hover:opacity-90 transition-opacity">
                 <FiUpload className="w-3 h-3" />
                 <input
                   type="file"
@@ -230,11 +238,11 @@ const EditEmployee = () => {
               </label>
             </div>
             <div>
-              <h2 className="text-lg font-semibold text-slate-800">
+              <h2 className={`text-lg font-semibold ${theme.text.primary}`}>
                 {formData.firstName} {formData.lastName}
               </h2>
-              <p className="text-slate-600">{formData.role} • {formData.department}</p>
-              <p className="text-sm text-slate-500">Employee ID: {formData.employeeId}</p>
+              <p className={theme.text.secondary}>{formData.role} • {formData.department}</p>
+              <p className={`text-sm ${theme.text.secondary}`}>Employee ID: {formData.employeeId}</p>
             </div>
           </div>
         </div>
@@ -245,9 +253,9 @@ const EditEmployee = () => {
             <div className="space-y-6">
               {/* First Name */}
               <div>
-                <label className="block text-sm font-medium text-slate-800 mb-2">
+                <label className={`block text-sm font-medium ${theme.text.secondary} mb-2`}>
                   <span className="flex items-center gap-2">
-                    <FiUser className="w-4 h-4" />
+                    <FiUser className="w-4 h-4 text-purple-400" />
                     First Name *
                   </span>
                 </label>
@@ -256,20 +264,20 @@ const EditEmployee = () => {
                   name="firstName"
                   value={formData.firstName}
                   onChange={handleChange}
-                  className={`w-full px-4 py-3 border ${
-                    errors.firstName ? "border-red-300" : "border-slate-300"
-                  } rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all`}
+                  className={`w-full px-4 py-3 ${theme.input.bg} border ${
+                    errors.firstName ? "border-rose-500" : theme.input.border
+                  } rounded-lg focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 ${theme.input.text} transition-all`}
                 />
                 {errors.firstName && (
-                  <p className="mt-1 text-sm text-red-600">{errors.firstName}</p>
+                  <p className="mt-1 text-sm text-rose-400">{errors.firstName}</p>
                 )}
               </div>
 
               {/* Last Name */}
               <div>
-                <label className="block text-sm font-medium text-slate-800 mb-2">
+                <label className={`block text-sm font-medium ${theme.text.secondary} mb-2`}>
                   <span className="flex items-center gap-2">
-                    <FiUser className="w-4 h-4" />
+                    <FiUser className="w-4 h-4 text-purple-400" />
                     Last Name *
                   </span>
                 </label>
@@ -278,20 +286,20 @@ const EditEmployee = () => {
                   name="lastName"
                   value={formData.lastName}
                   onChange={handleChange}
-                  className={`w-full px-4 py-3 border ${
-                    errors.lastName ? "border-red-300" : "border-slate-300"
-                  } rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all`}
+                  className={`w-full px-4 py-3 ${theme.input.bg} border ${
+                    errors.lastName ? "border-rose-500" : theme.input.border
+                  } rounded-lg focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 ${theme.input.text} transition-all`}
                 />
                 {errors.lastName && (
-                  <p className="mt-1 text-sm text-red-600">{errors.lastName}</p>
+                  <p className="mt-1 text-sm text-rose-400">{errors.lastName}</p>
                 )}
               </div>
 
               {/* Work Email */}
               <div>
-                <label className="block text-sm font-medium text-slate-800 mb-2">
+                <label className={`block text-sm font-medium ${theme.text.secondary} mb-2`}>
                   <span className="flex items-center gap-2">
-                    <FiMail className="w-4 h-4" />
+                    <FiMail className="w-4 h-4 text-purple-400" />
                     Work Email *
                   </span>
                 </label>
@@ -300,20 +308,20 @@ const EditEmployee = () => {
                   name="email"
                   value={formData.email}
                   onChange={handleChange}
-                  className={`w-full px-4 py-3 border ${
-                    errors.email ? "border-red-300" : "border-slate-300"
-                  } rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all`}
+                  className={`w-full px-4 py-3 ${theme.input.bg} border ${
+                    errors.email ? "border-rose-500" : theme.input.border
+                  } rounded-lg focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 ${theme.input.text} transition-all`}
                 />
                 {errors.email && (
-                  <p className="mt-1 text-sm text-red-600">{errors.email}</p>
+                  <p className="mt-1 text-sm text-rose-400">{errors.email}</p>
                 )}
               </div>
 
               {/* Personal Email */}
               <div>
-                <label className="block text-sm font-medium text-slate-800 mb-2">
+                <label className={`block text-sm font-medium ${theme.text.secondary} mb-2`}>
                   <span className="flex items-center gap-2">
-                    <FiMail className="w-4 h-4" />
+                    <FiMail className="w-4 h-4 text-purple-400" />
                     Personal Email
                   </span>
                 </label>
@@ -322,15 +330,15 @@ const EditEmployee = () => {
                   name="personalEmail"
                   value={formData.personalEmail}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all"
+                  className={`w-full px-4 py-3 ${theme.input.bg} border ${theme.input.border} rounded-lg focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 ${theme.input.text} transition-all`}
                 />
               </div>
 
               {/* Phone */}
               <div>
-                <label className="block text-sm font-medium text-slate-800 mb-2">
+                <label className={`block text-sm font-medium ${theme.text.secondary} mb-2`}>
                   <span className="flex items-center gap-2">
-                    <FiPhone className="w-4 h-4" />
+                    <FiPhone className="w-4 h-4 text-purple-400" />
                     Phone Number *
                   </span>
                 </label>
@@ -339,20 +347,20 @@ const EditEmployee = () => {
                   name="phone"
                   value={formData.phone}
                   onChange={handleChange}
-                  className={`w-full px-4 py-3 border ${
-                    errors.phone ? "border-red-300" : "border-slate-300"
-                  } rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all`}
+                  className={`w-full px-4 py-3 ${theme.input.bg} border ${
+                    errors.phone ? "border-rose-500" : theme.input.border
+                  } rounded-lg focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 ${theme.input.text} transition-all`}
                 />
                 {errors.phone && (
-                  <p className="mt-1 text-sm text-red-600">{errors.phone}</p>
+                  <p className="mt-1 text-sm text-rose-400">{errors.phone}</p>
                 )}
               </div>
 
               {/* Date of Birth */}
               <div>
-                <label className="block text-sm font-medium text-slate-800 mb-2">
+                <label className={`block text-sm font-medium ${theme.text.secondary} mb-2`}>
                   <span className="flex items-center gap-2">
-                    <FiCalendar className="w-4 h-4" />
+                    <FiCalendar className="w-4 h-4 text-purple-400" />
                     Date of Birth
                   </span>
                 </label>
@@ -361,25 +369,25 @@ const EditEmployee = () => {
                   name="dob"
                   value={formData.dob}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all"
+                  className={`w-full px-4 py-3 ${theme.input.bg} border ${theme.input.border} rounded-lg focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 ${theme.input.text} transition-all`}
                 />
               </div>
 
               {/* Gender */}
               <div>
-                <label className="block text-sm font-medium text-slate-800 mb-2">
+                <label className={`block text-sm font-medium ${theme.text.secondary} mb-2`}>
                   Gender
                 </label>
                 <select
                   name="gender"
                   value={formData.gender}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all bg-white"
+                  className={`w-full px-4 py-3 ${theme.input.bg} border ${theme.input.border} rounded-lg focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 ${theme.input.text} transition-all`}
                 >
-                  <option value="Male">Male</option>
-                  <option value="Female">Female</option>
-                  <option value="Other">Other</option>
-                  <option value="Prefer not to say">Prefer not to say</option>
+                  <option value="Male" className={darkMode ? "bg-gray-800 text-white" : "bg-white text-gray-800"}>Male</option>
+                  <option value="Female" className={darkMode ? "bg-gray-800 text-white" : "bg-white text-gray-800"}>Female</option>
+                  <option value="Other" className={darkMode ? "bg-gray-800 text-white" : "bg-white text-gray-800"}>Other</option>
+                  <option value="Prefer not to say" className={darkMode ? "bg-gray-800 text-white" : "bg-white text-gray-800"}>Prefer not to say</option>
                 </select>
               </div>
             </div>
@@ -388,9 +396,9 @@ const EditEmployee = () => {
             <div className="space-y-6">
               {/* Department */}
               <div>
-                <label className="block text-sm font-medium text-slate-800 mb-2">
+                <label className={`block text-sm font-medium ${theme.text.secondary} mb-2`}>
                   <span className="flex items-center gap-2">
-                    <HiOutlineOfficeBuilding className="w-4 h-4" />
+                    <HiOutlineOfficeBuilding className="w-4 h-4 text-purple-400" />
                     Department *
                   </span>
                 </label>
@@ -398,26 +406,26 @@ const EditEmployee = () => {
                   name="department"
                   value={formData.department}
                   onChange={handleChange}
-                  className={`w-full px-4 py-3 border ${
-                    errors.department ? "border-red-300" : "border-slate-300"
-                  } rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all bg-white`}
+                  className={`w-full px-4 py-3 ${theme.input.bg} border ${
+                    errors.department ? "border-rose-500" : theme.input.border
+                  } rounded-lg focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 ${theme.input.text} transition-all`}
                 >
-                  <option value="IT">Information Technology</option>
-                  <option value="HR">Human Resources</option>
-                  <option value="Finance">Finance & Accounting</option>
-                  <option value="Marketing">Marketing</option>
-                  <option value="Operations">Operations</option>
+                  <option value="IT" className={darkMode ? "bg-gray-800 text-white" : "bg-white text-gray-800"}>Information Technology</option>
+                  <option value="HR" className={darkMode ? "bg-gray-800 text-white" : "bg-white text-gray-800"}>Human Resources</option>
+                  <option value="Finance" className={darkMode ? "bg-gray-800 text-white" : "bg-white text-gray-800"}>Finance & Accounting</option>
+                  <option value="Marketing" className={darkMode ? "bg-gray-800 text-white" : "bg-white text-gray-800"}>Marketing</option>
+                  <option value="Operations" className={darkMode ? "bg-gray-800 text-white" : "bg-white text-gray-800"}>Operations</option>
                 </select>
                 {errors.department && (
-                  <p className="mt-1 text-sm text-red-600">{errors.department}</p>
+                  <p className="mt-1 text-sm text-rose-400">{errors.department}</p>
                 )}
               </div>
 
               {/* Role */}
               <div>
-                <label className="block text-sm font-medium text-slate-800 mb-2">
+                <label className={`block text-sm font-medium ${theme.text.secondary} mb-2`}>
                   <span className="flex items-center gap-2">
-                    <FiBriefcase className="w-4 h-4" />
+                    <FiBriefcase className="w-4 h-4 text-purple-400" />
                     Role *
                   </span>
                 </label>
@@ -425,62 +433,62 @@ const EditEmployee = () => {
                   name="role"
                   value={formData.role}
                   onChange={handleChange}
-                  className={`w-full px-4 py-3 border ${
-                    errors.role ? "border-red-300" : "border-slate-300"
-                  } rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all bg-white`}
+                  className={`w-full px-4 py-3 ${theme.input.bg} border ${
+                    errors.role ? "border-rose-500" : theme.input.border
+                  } rounded-lg focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 ${theme.input.text} transition-all`}
                 >
-                  <option value="Software Engineer">Software Engineer</option>
-                  <option value="Senior Developer">Senior Developer</option>
-                  <option value="Team Lead">Team Lead</option>
-                  <option value="Manager">Manager</option>
-                  <option value="HR Executive">HR Executive</option>
-                  <option value="Accountant">Accountant</option>
+                  <option value="Software Engineer" className={darkMode ? "bg-gray-800 text-white" : "bg-white text-gray-800"}>Software Engineer</option>
+                  <option value="Senior Developer" className={darkMode ? "bg-gray-800 text-white" : "bg-white text-gray-800"}>Senior Developer</option>
+                  <option value="Team Lead" className={darkMode ? "bg-gray-800 text-white" : "bg-white text-gray-800"}>Team Lead</option>
+                  <option value="Manager" className={darkMode ? "bg-gray-800 text-white" : "bg-white text-gray-800"}>Manager</option>
+                  <option value="HR Executive" className={darkMode ? "bg-gray-800 text-white" : "bg-white text-gray-800"}>HR Executive</option>
+                  <option value="Accountant" className={darkMode ? "bg-gray-800 text-white" : "bg-white text-gray-800"}>Accountant</option>
                 </select>
                 {errors.role && (
-                  <p className="mt-1 text-sm text-red-600">{errors.role}</p>
+                  <p className="mt-1 text-sm text-rose-400">{errors.role}</p>
                 )}
               </div>
 
               {/* Reporting Manager */}
               <div>
-                <label className="block text-sm font-medium text-slate-800 mb-2">
+                <label className={`block text-sm font-medium ${theme.text.secondary} mb-2`}>
                   Reporting Manager
                 </label>
                 <select
                   name="managerId"
                   value={formData.managerId}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all bg-white"
+                  className={`w-full px-4 py-3 ${theme.input.bg} border ${theme.input.border} rounded-lg focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 ${theme.input.text} transition-all`}
                 >
-                  <option value="2">Simran Kaur (HR Director)</option>
-                  <option value="3">Ankit Mehta (Finance Head)</option>
-                  <option value="4">Priya Patel (Marketing Head)</option>
+                  <option value="2" className={darkMode ? "bg-gray-800 text-white" : "bg-white text-gray-800"}>Simran Kaur (HR Director)</option>
+                  <option value="3" className={darkMode ? "bg-gray-800 text-white" : "bg-white text-gray-800"}>Ankit Mehta (Finance Head)</option>
+                  <option value="4" className={darkMode ? "bg-gray-800 text-white" : "bg-white text-gray-800"}>Priya Patel (Marketing Head)</option>
                 </select>
               </div>
 
               {/* Employment Type */}
               <div>
-                <label className="block text-sm font-medium text-slate-800 mb-2">
+                <label className={`block text-sm font-medium ${theme.text.secondary} mb-2`}>
                   Employment Type
                 </label>
                 <select
                   name="employmentType"
                   value={formData.employmentType}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all bg-white"
+                  className={`w-full px-4 py-3 ${theme.input.bg} border ${theme.input.border} rounded-lg focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 ${theme.input.text} transition-all`}
                 >
-                  <option value="Full-time">Full-time</option>
-                  <option value="Part-time">Part-time</option>
-                  <option value="Contract">Contract</option>
-                  <option value="Intern">Intern</option>
+                  <option value="Full-time" className={darkMode ? "bg-gray-800 text-white" : "bg-white text-gray-800"}>Full-time</option>
+                  <option value="Part-time" className={darkMode ? "bg-gray-800 text-white" : "bg-white text-gray-800"}>Part-time</option>
+                  <option value="Contract" className={darkMode ? "bg-gray-800 text-white" : "bg-white text-gray-800"}>Contract</option>
+                  <option value="Intern" className={darkMode ? "bg-gray-800 text-white" : "bg-white text-gray-800"}>Intern</option>
                 </select>
               </div>
 
               {/* Join Date */}
               <div>
-                <label className="block text-sm font-medium text-slate-800 mb-2">
+                <label className={`block text-sm font-medium ${theme.text.secondary} mb-2`}>
                   <span className="flex items-center gap-2">
-                    <FiCalendar className="w-4 h-4" />
+                    <FiCalendar className="w-4 h-4 text-purple-400" />
                     Join Date
                   </span>
                 </label>
@@ -489,13 +497,13 @@ const EditEmployee = () => {
                   name="joinDate"
                   value={formData.joinDate}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all"
+                  className={`w-full px-4 py-3 ${theme.input.bg} border ${theme.input.border} rounded-lg focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 ${theme.input.text} transition-all`}
                 />
               </div>
 
               {/* Status */}
               <div>
-                <label className="block text-sm font-medium text-slate-800 mb-2">
+                <label className={`block text-sm font-medium ${theme.text.secondary} mb-2`}>
                   Status
                 </label>
                 <div className="flex gap-4">
@@ -506,9 +514,9 @@ const EditEmployee = () => {
                       value="Active"
                       checked={formData.status === "Active"}
                       onChange={handleChange}
-                      className="text-blue-500 focus:ring-blue-200"
+                      className="text-purple-500 focus:ring-purple-500/20"
                     />
-                    <span className="px-4 py-2 rounded-lg border border-green-200 bg-green-50 text-green-700 font-medium">
+                    <span className={`px-4 py-2 rounded-lg border ${darkMode ? 'border-emerald-500/30' : 'border-emerald-400'} ${darkMode ? 'bg-emerald-500/10' : 'bg-emerald-50'} ${darkMode ? 'text-emerald-400' : 'text-emerald-600'} font-medium`}>
                       Active
                     </span>
                   </label>
@@ -519,9 +527,9 @@ const EditEmployee = () => {
                       value="Inactive"
                       checked={formData.status === "Inactive"}
                       onChange={handleChange}
-                      className="text-blue-500 focus:ring-blue-200"
+                      className="text-purple-500 focus:ring-purple-500/20"
                     />
-                    <span className="px-4 py-2 rounded-lg border border-slate-200 bg-slate-50 text-slate-700 font-medium">
+                    <span className={`px-4 py-2 rounded-lg border ${theme.border.primary} ${darkMode ? 'bg-gray-900/50' : 'bg-gray-100'} ${theme.text.secondary} font-medium`}>
                       Inactive
                     </span>
                   </label>
@@ -533,9 +541,9 @@ const EditEmployee = () => {
             <div className="lg:col-span-2 space-y-6">
               {/* Address */}
               <div>
-                <label className="block text-sm font-medium text-slate-800 mb-2">
+                <label className={`block text-sm font-medium ${theme.text.secondary} mb-2`}>
                   <span className="flex items-center gap-2">
-                    <FiMapPin className="w-4 h-4" />
+                    <FiMapPin className="w-4 h-4 text-purple-400" />
                     Address
                   </span>
                 </label>
@@ -544,14 +552,14 @@ const EditEmployee = () => {
                   rows="2"
                   value={formData.address}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all"
+                  className={`w-full px-4 py-3 ${theme.input.bg} border ${theme.input.border} rounded-lg focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 ${theme.input.text} transition-all`}
                 />
               </div>
 
               {/* Emergency Contact */}
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-slate-800 mb-2">
+                  <label className={`block text-sm font-medium ${theme.text.secondary} mb-2`}>
                     Emergency Contact Name
                   </label>
                   <input
@@ -559,11 +567,11 @@ const EditEmployee = () => {
                     name="emergencyName"
                     value={formData.emergencyName}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all"
+                    className={`w-full px-4 py-3 ${theme.input.bg} border ${theme.input.border} rounded-lg focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 ${theme.input.text} transition-all`}
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-slate-800 mb-2">
+                  <label className={`block text-sm font-medium ${theme.text.secondary} mb-2`}>
                     Emergency Phone
                   </label>
                   <input
@@ -571,11 +579,11 @@ const EditEmployee = () => {
                     name="emergencyPhone"
                     value={formData.emergencyPhone}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all"
+                    className={`w-full px-4 py-3 ${theme.input.bg} border ${theme.input.border} rounded-lg focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 ${theme.input.text} transition-all`}
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-slate-800 mb-2">
+                  <label className={`block text-sm font-medium ${theme.text.secondary} mb-2`}>
                     Relationship
                   </label>
                   <input
@@ -583,7 +591,7 @@ const EditEmployee = () => {
                     name="emergencyRelation"
                     value={formData.emergencyRelation}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all"
+                    className={`w-full px-4 py-3 ${theme.input.bg} border ${theme.input.border} rounded-lg focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 ${theme.input.text} transition-all`}
                   />
                 </div>
               </div>
@@ -591,7 +599,7 @@ const EditEmployee = () => {
               {/* Qualifications & Skills */}
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-slate-800 mb-2">
+                  <label className={`block text-sm font-medium ${theme.text.secondary} mb-2`}>
                     Qualifications
                   </label>
                   <textarea
@@ -599,11 +607,11 @@ const EditEmployee = () => {
                     rows="3"
                     value={formData.qualifications}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all"
+                    className={`w-full px-4 py-3 ${theme.input.bg} border ${theme.input.border} rounded-lg focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 ${theme.input.text} transition-all`}
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-slate-800 mb-2">
+                  <label className={`block text-sm font-medium ${theme.text.secondary} mb-2`}>
                     Skills
                   </label>
                   <textarea
@@ -611,7 +619,7 @@ const EditEmployee = () => {
                     rows="3"
                     value={formData.skills}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all"
+                    className={`w-full px-4 py-3 ${theme.input.bg} border ${theme.input.border} rounded-lg focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 ${theme.input.text} transition-all`}
                   />
                 </div>
               </div>
@@ -619,10 +627,10 @@ const EditEmployee = () => {
           </div>
 
           {/* Form Actions */}
-          <div className="mt-8 pt-6 border-t border-slate-200 flex justify-between items-center">
+          <div className={`mt-8 pt-6 border-t ${theme.border.primary} flex justify-between items-center`}>
             <div>
               {hasChanges && (
-                <span className="text-sm text-amber-600 flex items-center gap-2">
+                <span className="text-sm text-amber-500 dark:text-amber-400 flex items-center gap-2">
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.998-.833-2.732 0L4.23 16.5c-.77.833.192 2.5 1.732 2.5z" />
                   </svg>
@@ -634,14 +642,14 @@ const EditEmployee = () => {
             <div className="flex gap-3">
               <Link
                 to="/admin/employees"
-                className="px-6 py-3 border border-slate-300 text-slate-700 rounded-lg hover:bg-slate-50 font-medium"
+                className={`px-6 py-3 ${theme.bg.tertiary} border ${theme.border.primary} ${theme.text.secondary} rounded-lg hover:border-purple-500 hover:text-purple-600 transition-colors font-medium`}
               >
                 Cancel
               </Link>
               <button
                 type="submit"
                 disabled={isSubmitting || !hasChanges}
-                className={`flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-500 to-cyan-500 text-white rounded-lg shadow hover:shadow-md font-medium transition-all ${
+                className={`px-6 py-3 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-medium transition-colors ${
                   isSubmitting || !hasChanges ? "opacity-75 cursor-not-allowed" : ""
                 }`}
               >
@@ -655,7 +663,7 @@ const EditEmployee = () => {
                   </>
                 ) : (
                   <>
-                    <FiSave className="w-5 h-5" />
+                    <FiSave className="w-5 h-5 inline mr-2" />
                     Save Changes
                   </>
                 )}
@@ -668,36 +676,34 @@ const EditEmployee = () => {
       {/* Delete Modal */}
       {showDeleteModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-xl shadow-lg max-w-md w-full">
-            <div className="p-6">
-              <div className="w-12 h-12 mx-auto mb-4 rounded-full bg-red-100 flex items-center justify-center">
-                <FiTrash2 className="w-6 h-6 text-red-600" />
-              </div>
-              <h3 className="text-lg font-semibold text-slate-800 text-center mb-2">
-                Delete Employee?
-              </h3>
-              <p className="text-slate-600 text-center mb-6">
-                Are you sure you want to delete {formData.firstName} {formData.lastName}? This action cannot be undone and will permanently remove all employee data.
-              </p>
-              <div className="flex gap-3">
-                <button
-                  onClick={() => setShowDeleteModal(false)}
-                  className="flex-1 px-4 py-3 border border-slate-300 text-slate-700 rounded-lg hover:bg-slate-50 font-medium"
-                >
-                  Cancel
-                </button>
-                <button
-                  onClick={handleDelete}
-                  className="flex-1 px-4 py-3 bg-red-500 text-white rounded-lg hover:bg-red-600 font-medium"
-                >
-                  Delete Employee
-                </button>
-              </div>
+          <div className={`${theme.bg.secondary} rounded-xl shadow-lg border ${theme.border.primary} p-6 max-w-md w-full`}>
+            <div className="w-12 h-12 mx-auto mb-4 rounded-full bg-rose-500/20 flex items-center justify-center">
+              <FiTrash2 className="w-6 h-6 text-rose-500 dark:text-rose-400" />
+            </div>
+            <h3 className={`text-lg font-semibold ${theme.text.primary} text-center mb-2`}>
+              Delete Employee?
+            </h3>
+            <p className={`${theme.text.secondary} text-center mb-6`}>
+              Are you sure you want to delete {formData.firstName} {formData.lastName}? This action cannot be undone and will permanently remove all employee data.
+            </p>
+            <div className="flex gap-3">
+              <button
+                onClick={() => setShowDeleteModal(false)}
+                className={`flex-1 px-4 py-3 ${theme.bg.tertiary} border ${theme.border.primary} ${theme.text.secondary} rounded-lg hover:border-purple-500 hover:text-purple-600 transition-colors font-medium`}
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleDelete}
+                className="flex-1 px-4 py-3 bg-rose-600 hover:bg-rose-700 text-white rounded-lg font-medium"
+              >
+                Delete Employee
+              </button>
             </div>
           </div>
         </div>
       )}
-    </AdminLayout>
+    </div>
   );
 };
 
